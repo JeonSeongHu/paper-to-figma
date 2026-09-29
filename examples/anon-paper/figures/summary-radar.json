@@ -1,0 +1,133 @@
+{
+ "version": 1,
+ "kind": "radar",
+ "name": "Anchor Tokens / summary radar",
+ "methods": [
+  {
+   "id": "anchor",
+   "label": "Anchor Tokens (ours)",
+   "ours": true
+  },
+  {
+   "id": "full",
+   "label": "Full tokens"
+  },
+  {
+   "id": "random",
+   "label": "Random pruning"
+  }
+ ],
+ "axes": [
+  {
+   "label": "Pick cup",
+   "better": "higher",
+   "values": {
+    "anchor": [
+     84.0,
+     "T1[Anchor Tokens (ours)][Pick cup]"
+    ],
+    "full": [
+     80.0,
+     "T1[Full tokens][Pick cup]"
+    ],
+    "random": [
+     70.0,
+     "T1[Random pruning][Pick cup]"
+    ]
+   }
+  },
+  {
+   "label": "Open drawer",
+   "better": "higher",
+   "values": {
+    "anchor": [
+     72.0,
+     "T1[Anchor Tokens (ours)][Open drawer]"
+    ],
+    "full": [
+     66.0,
+     "T1[Full tokens][Open drawer]"
+    ],
+    "random": [
+     62.0,
+     "T1[Random pruning][Open drawer]"
+    ]
+   }
+  },
+  {
+   "label": "Stack blocks",
+   "better": "higher",
+   "values": {
+    "anchor": [
+     58.0,
+     "T1[Anchor Tokens (ours)][Stack blocks]"
+    ],
+    "full": [
+     48.0,
+     "T1[Full tokens][Stack blocks]"
+    ],
+    "random": [
+     40.0,
+     "T1[Random pruning][Stack blocks]"
+    ]
+   }
+  },
+  {
+   "label": "Wipe table",
+   "better": "higher",
+   "values": {
+    "anchor": [
+     71.6,
+     "T1[Anchor Tokens (ours)][Wipe table]"
+    ],
+    "full": [
+     65.6,
+     "T1[Full tokens][Wipe table]"
+    ],
+    "random": [
+     60.8,
+     "T1[Random pruning][Wipe table]"
+    ]
+   }
+  },
+  {
+   "label": "Latency",
+   "better": "lower",
+   "values": {
+    "anchor": [
+     23,
+     "T3[Anchor Tokens (ours)][Latency (ms)]"
+    ],
+    "full": [
+     61,
+     "T3[Full tokens][Latency (ms)]"
+    ],
+    "random": [
+     21,
+     "T3[Random pruning][Latency (ms)]"
+    ]
+   }
+  },
+  {
+   "label": "Memory",
+   "better": "lower",
+   "values": {
+    "anchor": [
+     5.1,
+     "T3[Anchor Tokens (ours)][Memory (GB)]"
+    ],
+    "full": [
+     9.8,
+     "T3[Full tokens][Memory (GB)]"
+    ],
+    "random": [
+     5.0,
+     "T3[Random pruning][Memory (GB)]"
+    ]
+   }
+  }
+ ],
+ "legend": {
+  "title": "Token strategy"
+ }
+}

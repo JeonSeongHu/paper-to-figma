@@ -1,0 +1,27 @@
+{
+  "name": "paper-to-figma",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Verified paper figures in Figma from a paper's text: a figure kit with a measured size spec, a local Figma bridge, evidence checks against the paper, and PDF checks for strict viewers.",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "scripts": {
+    "setup": "bun src/cli.mjs setup",
+    "doctor": "bun src/cli.mjs doctor",
+    "relay": "bun src/relay.mjs",
+    "mcp": "bun src/mcp.mjs",
+    "cli": "bun src/cli.mjs",
+    "test": "bun test",
+    "build:plugin": "bun build plugin/main.js --outfile plugin/code.js --target browser --format iife --minify",
+    "build:kit": "bun build kit/index.js --outfile kit/dist/kit.js --target browser --format iife",
+    "build": "bun run build:kit && bun run build:plugin"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "ws": "8.21.3",
+    "zod": "4.5.4"
+  }
+}

@@ -1,0 +1,5 @@
+# Codex: register the MCP server with `codex mcp add paper-to-figma -- bun /absolute/path/to/paper-to-figma/src/mcp.mjs`
+# and point Codex at the skill in skills/paper-to-figma/SKILL.md (bun run setup prints both).
+name: paper-to-figma
+description: Make verified paper figures in Figma from a paper's text. Read skills/paper-to-figma/SKILL.md first.
+skill: skills/paper-to-figma/SKILL.md

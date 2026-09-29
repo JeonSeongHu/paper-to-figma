@@ -1,0 +1,11 @@
+{
+  "name": "paper-to-figma",
+  "owner": { "name": "Seonghu Jeon" },
+  "plugins": [
+    {
+      "name": "paper-to-figma",
+      "source": "./",
+      "description": "Verified paper figures in Figma from a paper's text."
+    }
+  ]
+}

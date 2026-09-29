@@ -1,0 +1,116 @@
+{
+ "version": 1,
+ "kind": "chart-grid",
+ "name": "Anchor Tokens / success per task",
+ "methods": [
+  {
+   "id": "anchor",
+   "label": "Anchor Tokens (ours)",
+   "ours": true
+  },
+  {
+   "id": "full",
+   "label": "Full tokens"
+  },
+  {
+   "id": "random",
+   "label": "Random pruning"
+  }
+ ],
+ "x": {
+  "title": "Task",
+  "ticks": [
+   0,
+   1
+  ]
+ },
+ "groups": [
+  {
+   "title": "Success rate at the end of training",
+   "panels": [
+    {
+     "type": "bar",
+     "title": "Success rate (%)",
+     "better": "higher",
+     "categories": [
+      "Pick cup",
+      "Open drawer",
+      "Stack blocks",
+      "Wipe table"
+     ],
+     "range": [
+      0,
+      100,
+      25
+     ],
+     "series": [
+      {
+       "method": "anchor",
+       "values": [
+        [
+         84.0,
+         "T1[Anchor Tokens (ours)][Pick cup]"
+        ],
+        [
+         72.0,
+         "T1[Anchor Tokens (ours)][Open drawer]"
+        ],
+        [
+         58.0,
+         "T1[Anchor Tokens (ours)][Stack blocks]"
+        ],
+        [
+         71.6,
+         "T1[Anchor Tokens (ours)][Wipe table]"
+        ]
+       ]
+      },
+      {
+       "method": "full",
+       "values": [
+        [
+         80.0,
+         "T1[Full tokens][Pick cup]"
+        ],
+        [
+         66.0,
+         "T1[Full tokens][Open drawer]"
+        ],
+        [
+         48.0,
+         "T1[Full tokens][Stack blocks]"
+        ],
+        [
+         65.6,
+         "T1[Full tokens][Wipe table]"
+        ]
+       ]
+      },
+      {
+       "method": "random",
+       "values": [
+        [
+         70.0,
+         "T1[Random pruning][Pick cup]"
+        ],
+        [
+         62.0,
+         "T1[Random pruning][Open drawer]"
+        ],
+        [
+         40.0,
+         "T1[Random pruning][Stack blocks]"
+        ],
+        [
+         60.8,
+         "T1[Random pruning][Wipe table]"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "legend": {}
+}

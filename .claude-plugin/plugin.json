@@ -1,0 +1,8 @@
+{
+  "name": "paper-to-figma",
+  "version": "0.1.0",
+  "description": "Verified paper figures in Figma from a paper's text: a figure kit with a measured size spec, automatic layout, evidence checks of every number against the paper, and PDF checks for strict viewers.",
+  "author": { "name": "Seonghu Jeon" },
+  "license": "MIT",
+  "keywords": ["figma", "paper", "figure", "chart", "diagram", "latex"]
+}

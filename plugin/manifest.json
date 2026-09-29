@@ -1,0 +1,14 @@
+{
+  "name": "Paper to Figma",
+  "id": "paper-to-figma-local",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "devAllowedDomains": ["ws://127.0.0.1:3057"],
+    "reasoning": "Connect only to the local paper-to-figma relay during development."
+  }
+}

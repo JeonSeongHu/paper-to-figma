@@ -1,0 +1,181 @@
+{
+ "version": 1,
+ "kind": "chart-grid",
+ "name": "Anchor Tokens / training curves",
+ "methods": [
+  {
+   "id": "anchor",
+   "label": "Anchor Tokens (ours)",
+   "ours": true
+  },
+  {
+   "id": "full",
+   "label": "Full tokens"
+  },
+  {
+   "id": "random",
+   "label": "Random pruning"
+  }
+ ],
+ "x": {
+  "title": "Training steps (thousands)",
+  "ticks": [
+   10,
+   20,
+   40,
+   80
+  ]
+ },
+ "groups": [
+  {
+   "title": "Training progress",
+   "panels": [
+    {
+     "title": "Mean success rate (%)",
+     "better": "higher",
+     "series": {
+      "anchor": [
+       [
+        10,
+        31.5,
+        "T2[Anchor Tokens (ours) | Success][10k]"
+       ],
+       [
+        20,
+        52.0,
+        "T2[Anchor Tokens (ours) | Success][20k]"
+       ],
+       [
+        40,
+        64.8,
+        "T2[Anchor Tokens (ours) | Success][40k]"
+       ],
+       [
+        80,
+        71.4,
+        "T2[Anchor Tokens (ours) | Success][80k]"
+       ]
+      ],
+      "full": [
+       [
+        10,
+        35.2,
+        "T2[Full tokens | Success][10k]"
+       ],
+       [
+        20,
+        50.1,
+        "T2[Full tokens | Success][20k]"
+       ],
+       [
+        40,
+        59.7,
+        "T2[Full tokens | Success][40k]"
+       ],
+       [
+        80,
+        64.9,
+        "T2[Full tokens | Success][80k]"
+       ]
+      ],
+      "random": [
+       [
+        10,
+        22.4,
+        "T2[Random pruning | Success][10k]"
+       ],
+       [
+        20,
+        41.3,
+        "T2[Random pruning | Success][20k]"
+       ],
+       [
+        40,
+        52.5,
+        "T2[Random pruning | Success][40k]"
+       ],
+       [
+        80,
+        58.2,
+        "T2[Random pruning | Success][80k]"
+       ]
+      ]
+     }
+    },
+    {
+     "title": "Validation action loss",
+     "better": "lower",
+     "series": {
+      "anchor": [
+       [
+        10,
+        0.412,
+        "T2[Anchor Tokens (ours) | Loss][10k]"
+       ],
+       [
+        20,
+        0.301,
+        "T2[Anchor Tokens (ours) | Loss][20k]"
+       ],
+       [
+        40,
+        0.244,
+        "T2[Anchor Tokens (ours) | Loss][40k]"
+       ],
+       [
+        80,
+        0.219,
+        "T2[Anchor Tokens (ours) | Loss][80k]"
+       ]
+      ],
+      "full": [
+       [
+        10,
+        0.398,
+        "T2[Full tokens | Loss][10k]"
+       ],
+       [
+        20,
+        0.315,
+        "T2[Full tokens | Loss][20k]"
+       ],
+       [
+        40,
+        0.268,
+        "T2[Full tokens | Loss][40k]"
+       ],
+       [
+        80,
+        0.247,
+        "T2[Full tokens | Loss][80k]"
+       ]
+      ],
+      "random": [
+       [
+        10,
+        0.455,
+        "T2[Random pruning | Loss][10k]"
+       ],
+       [
+        20,
+        0.352,
+        "T2[Random pruning | Loss][20k]"
+       ],
+       [
+        40,
+        0.297,
+        "T2[Random pruning | Loss][40k]"
+       ],
+       [
+        80,
+        0.275,
+        "T2[Random pruning | Loss][80k]"
+       ]
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "legend": {}
+}

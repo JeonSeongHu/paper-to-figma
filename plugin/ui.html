@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { font: 13px Inter, Arial, sans-serif; color: #172132; padding: 18px; margin: 0; background: #f6fafb; }
+      h2 { font-size: 18px; margin: 0 0 10px; }
+      p { line-height: 1.5; margin: 6px 0; }
+      label { display: block; margin: 12px 0 6px; }
+      input[type="password"] { box-sizing: border-box; width: 100%; padding: 10px; border: 1px solid #d2d8df; border-radius: 4px; }
+      .row { display: flex; gap: 8px; margin-top: 12px; }
+      button { padding: 10px 16px; background: #197a8a; color: white; border: 0; border-radius: 4px; cursor: pointer; }
+      button.secondary { background: #6b7280; }
+      .check { display: flex; align-items: flex-start; gap: 8px; margin-top: 14px; }
+      .check input { margin-top: 3px; }
+      #status { min-height: 36px; color: #4b5563; margin-top: 10px; }
+      small { display: block; color: #586477; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <h2>Paper to Figma</h2>
+    <p>Run <code>bun run relay</code> in the repository, then paste the pairing code printed by <code>bun run setup</code>.</p>
+    <label for="channel">Pairing code</label>
+    <input id="channel" type="password" autocomplete="off" spellcheck="false" placeholder="From bun run setup" />
+    <div class="row"><button id="connect">Connect</button><button id="disconnect" class="secondary">Disconnect</button></div>
+    <label class="check"><input id="scripts" type="checkbox" /><span>Allow scripts. Lets the paired agent run a figure script with the kit (method diagrams, teasers). Leave off for charts from a spec.</span></label>
+    <p id="status">Disconnected</p>
+    <small>Keep this window open while the agent works. The paired agent can read the current file, add figure frames and replace a frame with the same name. Do not share the pairing code.</small>
+    <script>
+      let ws = null;
+      let connected = false;
+      const status = document.getElementById("status");
+      const scripts = document.getElementById("scripts");
+      scripts.onchange = () => parent.postMessage({ pluginMessage: { type: "settings", allowScripts: scripts.checked } }, "*");
+      document.getElementById("connect").onclick = () => {
+        if (ws) { ws.close(); ws = null; }
+        const channel = document.getElementById("channel").value.trim();
+        if (!/^[a-zA-Z0-9_-]{12,128}$/.test(channel)) { status.textContent = "Enter a valid pairing code."; return; }
+        const socket = new WebSocket("ws://127.0.0.1:3057");
+        ws = socket;
+        socket.onopen = () => socket.send(JSON.stringify({ type: "join", channel, role: "plugin" }));
+        socket.onmessage = (e) => {
+          const p = JSON.parse(e.data);
+          if (p.type === "joined") { connected = true; status.textContent = "Connected. The agent can now build figures."; }
+          else if (p.type === "request") parent.postMessage({ pluginMessage: p }, "*");
+        };
+        socket.onerror = () => { status.textContent = "Cannot reach the relay. Check bun run relay and port 3057."; };
+        socket.onclose = () => { if (ws === socket) { connected = false; status.textContent = "Disconnected. Reconnect to continue."; } };
+      };
+      document.getElementById("disconnect").onclick = () => { ws?.close(); connected = false; };
+      window.onmessage = (e) => {
+        const p = e.data.pluginMessage;
+        if (p?.type === "response" && connected && ws?.readyState === 1) ws.send(JSON.stringify(p));
+      };
+    </script>
+  </body>
+</html>
