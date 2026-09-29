@@ -150,11 +150,13 @@ export async function kitBundle() {
 }
 
 // Talk to Figma transport.
-// Commands that draw or export load the kit's fonts first. A plugin left in a bad state (seen after an interrupted large
-// export: its timers had stopped, and a font load late in the kit's sequence never resolved) then never answers, and
-// the command waited for its whole timeout without a word. A short first request that only loads the fonts turns this
-// into a quick error that says what to do. fontCheck is that request's time limit in ms.
-export async function connectTalkToFigma({ port = 3055, channel, timeout = 180000, fontCheck = 15000 } = {}) {
+// Before the first command that draws or exports, two short requests check the plugin. The first loads the kit's
+// fonts: a plugin that does not answer fails here within fontCheck ms instead of after the whole timeout. The second
+// waits for a 1 ms timer. While the Figma window is covered by other windows or minimized, Chromium holds its delayed
+// timers back, sometimes for many minutes. The kit does not wait on such timers, but a script that does (setTimeout,
+// or more than five font loads awaited one after another) would hang, so when the timer has not fired within
+// timerCheck ms, warn() says so and the command still runs.
+export async function connectTalkToFigma({ port = 3055, channel, timeout = 180000, fontCheck = 15000, timerCheck = 2000, warn = console.error } = {}) {
   if (!channel) throw new Error("Talk to Figma channel required (shown in its plugin window)");
   const kitSource = await kitBundle();
   const endpoint = `ws://localhost:${port}`;
@@ -210,14 +212,16 @@ export async function connectTalkToFigma({ port = 3055, channel, timeout = 18000
       ws.send(JSON.stringify({ id, type: "message", channel, message: { id, command: "execute_code", params: { code, commandId: id } } }));
     });
   };
-  let fontsLoaded = false;
+  let checked = false;
   return {
     transport: "talk-to-figma",
     async request(command, params = {}, ms = timeout) {
-      if (!fontsLoaded && ["build", "script", "export"].includes(command)) {
-        const check = `${kitSource}\nawait globalThis.createPaperKit(figma).init();\nreturn true;`;
-        await send(check, fontCheck, `Figma did not load the kit's fonts within ${fontCheck / 1000} s, so the plugin is probably stuck (an interrupted export can leave it so). Close and reopen the plugin, then retry.`);
-        fontsLoaded = true;
+      if (!checked && ["build", "script", "export"].includes(command)) {
+        const fonts = `${kitSource}\nawait globalThis.createPaperKit(figma).init();\nreturn true;`;
+        await send(fonts, fontCheck, `Figma did not load the kit's fonts within ${fontCheck / 1000} s. Bring the Figma window to the front; if that does not help, close and reopen the plugin, then retry.`);
+        const timers = await send("await new Promise((r) => setTimeout(r, 1));\nreturn true;", timerCheck, "").then(() => true, () => false);
+        if (!timers) warn(`warning: Figma is holding back the plugin's timers (a 1 ms timer did not fire within ${timerCheck / 1000} s), as it does while its window is covered or minimized. The kit works without them, but a script that waits on setTimeout, or awaits more than five font loads one after another, would hang: bring Figma to the front or leave part of its window visible.`);
+        checked = true;
       }
       return send(compatScript(kitSource, command, params), ms, `${command} timed out after ${ms} ms. A write may have completed; inspect the page before retrying.`);
     },

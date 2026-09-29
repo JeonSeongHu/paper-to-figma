@@ -337,24 +337,19 @@
       return { r: parseInt(h.slice(1, 3), 16) / 255, g: parseInt(h.slice(3, 5), 16) / 255, b: parseInt(h.slice(5, 7), 16) / 255 };
     };
     const paint = (h) => [{ type: "SOLID", color: hex(h) }];
+    const unnest = () => figma.clientStorage.getAsync("p2f-unnest");
     async function init({ extra = [] } = {}) {
       const want = [
         [FONT.sans, ["Regular", "Medium", "SemiBold", "Bold"]],
         [FONT.mono, ["Regular", "Medium", "SemiBold"]],
         [FONT.arrow, ["Regular", "Medium"]],
         ...extra
-      ];
-      const missing = [];
-      for (const [family, styles] of want)
-        for (const style of styles) {
-          try {
-            await figma.loadFontAsync({ family, style });
-          } catch {
-            missing.push(`${family} ${style}`);
-          }
-        }
+      ].flatMap(([family, styles]) => styles.map((style) => ({ family, style })));
+      const loads = await Promise.allSettled(want.map((f) => figma.loadFontAsync(f)));
+      const missing = want.filter((_, i) => loads[i].status === "rejected").map((f) => `${f.family} ${f.style}`);
       if (missing.some((m) => m.startsWith(FONT.sans)))
         throw new Error(`Font missing in Figma: ${missing.join(", ")}. Install Google Sans Flex.`);
+      await unnest();
       return { missing };
     }
     function AL(name, dir, o = {}) {
@@ -560,9 +555,10 @@
       for (const t of node.findAll((c) => c.type === "TEXT"))
         for (const s of t.getStyledTextSegments(["fontName"]))
           fonts.set(`${s.fontName.family}|${s.fontName.style}`, s.fontName);
-      for (const f of fonts.values())
-        await figma.loadFontAsync(f);
+      await Promise.all([...fonts.values()].map((f) => figma.loadFontAsync(f)));
+      await unnest();
       await node.exportAsync({ format: "PNG", constraint: { type: "SCALE", value: 0.05 } });
+      await unnest();
       return { images, fonts: fonts.size };
     }
     function imageRect(base64, w, name = "image") {
@@ -638,7 +634,7 @@
         out[role] = typeof v === "number" ? strokeWidth(kind, role, width) : v;
       return out;
     }
-    return { meanings, hex, paint, init, inspect, AL, add, box, spacer, T, TM, textWidth, colourRanges, svg, rect, dashedLine, arrow, absolute, rel, page, place, preloadImages, prepareExport, imageRect, sizes, strokes };
+    return { meanings, hex, paint, init, unnest, inspect, AL, add, box, spacer, T, TM, textWidth, colourRanges, svg, rect, dashedLine, arrow, absolute, rel, page, place, preloadImages, prepareExport, imageRect, sizes, strokes };
   }
 
   // kit/charts.js

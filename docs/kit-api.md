@@ -41,6 +41,7 @@ text roles. Leave it out only for a full-width figure at the reference width 149
 | `spec.mix(hex, alpha)` | an opaque tint (no transparency anywhere) |
 | `place(root, { pageName, name, x, y, declaredWidth, placement, kind, type })` | put the figure on a page; a frame with the same name is replaced in place; stores placement, kind, type (`teaser`, `overview`, `detail`, `qualitative`: the word budget) and the colour meanings on the frame |
 | `preloadImages(node)` | wait for images before an export |
+| `unnest()` | await it before an export or a font load that follows other awaits. Figma settles both through timers, and nested more than five deep they wait while the Figma window is covered or minimized (Chromium holds its delayed timers back). Load several fonts with `Promise.all`, not one after another |
 
 ## Diagram parts (`kit.diagram.*`)
 

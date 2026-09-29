@@ -14,24 +14,26 @@ export function createCore(figma) {
   // Opaque paint only. Pass S.mix(colour, alpha) when a lighter tone is needed.
   const paint = (h) => [{ type: "SOLID", color: hex(h) }];
 
+  // Figma settles font loads and exports through timers. Awaited one after another the timers nest, and from the sixth
+  // level on they are delayed timers (the browser delays each by 4 ms). While the Figma window is covered by other
+  // windows or minimized, Chromium treats it as hidden and holds delayed timers back, once for more than 15 minutes
+  // (they fired as soon as the window was shown), so a call past the fifth level hangs. The kit therefore loads fonts
+  // all at once, and awaits unnest() before an export: a clientStorage read settles outside the timers, so the code
+  // after it starts again at the first level.
+  const unnest = () => figma.clientStorage.getAsync("p2f-unnest");
+
   async function init({ extra = [] } = {}) {
     const want = [
       [FONT.sans, ["Regular", "Medium", "SemiBold", "Bold"]],
       [FONT.mono, ["Regular", "Medium", "SemiBold"]],
       [FONT.arrow, ["Regular", "Medium"]],
       ...extra,
-    ];
-    const missing = [];
-    for (const [family, styles] of want)
-      for (const style of styles) {
-        try {
-          await figma.loadFontAsync({ family, style });
-        } catch {
-          missing.push(`${family} ${style}`);
-        }
-      }
+    ].flatMap(([family, styles]) => styles.map((style) => ({ family, style })));
+    const loads = await Promise.allSettled(want.map((f) => figma.loadFontAsync(f)));
+    const missing = want.filter((_, i) => loads[i].status === "rejected").map((f) => `${f.family} ${f.style}`);
     // Never fall back to Inter silently: the figure would look like someone else's.
     if (missing.some((m) => m.startsWith(FONT.sans))) throw new Error(`Font missing in Figma: ${missing.join(", ")}. Install Google Sans Flex.`);
+    await unnest(); // the script that follows starts at the first level
     return { missing };
   }
 
@@ -250,8 +252,10 @@ export function createCore(figma) {
     const fonts = new Map();
     for (const t of node.findAll((c) => c.type === "TEXT"))
       for (const s of t.getStyledTextSegments(["fontName"])) fonts.set(`${s.fontName.family}|${s.fontName.style}`, s.fontName);
-    for (const f of fonts.values()) await figma.loadFontAsync(f);
+    await Promise.all([...fonts.values()].map((f) => figma.loadFontAsync(f))); // all at once, as in init()
+    await unnest();
     await node.exportAsync({ format: "PNG", constraint: { type: "SCALE", value: 0.05 } });
+    await unnest(); // the caller's export starts at the first level
     return { images, fonts: fonts.size };
   }
   function imageRect(base64, w, name = "image") {
@@ -324,5 +328,5 @@ export function createCore(figma) {
     return out;
   }
 
-  return { meanings, hex, paint, init, inspect, AL, add, box, spacer, T, TM, textWidth, colourRanges, svg, rect, dashedLine, arrow, absolute, rel, page, place, preloadImages, prepareExport, imageRect, sizes, strokes };
+  return { meanings, hex, paint, init, unnest, inspect, AL, add, box, spacer, T, TM, textWidth, colourRanges, svg, rect, dashedLine, arrow, absolute, rel, page, place, preloadImages, prepareExport, imageRect, sizes, strokes };
 }

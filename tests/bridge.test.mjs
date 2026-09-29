@@ -25,8 +25,8 @@ test("paired transport joins the relay and gets the relay's answer", async () =>
   }
 });
 
-// A stand-in for the Talk to Figma relay and plugin: it confirms the join, and answers every script with 42 when
-// `answers` is true or never answers, like a plugin that is stuck.
+// A stand-in for the Talk to Figma relay and plugin: it confirms the join, and answers a script with 42 when
+// answers(code) is true, or never, like a plugin that is stuck.
 function fakeTalkToFigma(answers) {
   return Bun.serve({
     hostname: "localhost",
@@ -38,17 +38,34 @@ function fakeTalkToFigma(answers) {
       message(ws, raw) {
         const m = JSON.parse(String(raw));
         if (m.type === "join") ws.send(JSON.stringify({ type: "system", message: `Joined channel: ${m.channel}`, channel: m.channel }));
-        else if (answers && m.message?.command === "execute_code") ws.send(JSON.stringify({ type: "broadcast", message: { id: m.message.id, result: { success: true, result: 42 } }, sender: "peer", channel: m.channel }));
+        else if (m.message?.command === "execute_code" && answers(m.message.params.code)) ws.send(JSON.stringify({ type: "broadcast", message: { id: m.message.id, result: { success: true, result: 42 } }, sender: "peer", channel: m.channel }));
       },
     },
   });
 }
 
-test("talk-to-figma transport runs a script after the font check", async () => {
-  const server = fakeTalkToFigma(true);
+test("talk-to-figma transport runs a script after the checks", async () => {
+  const server = fakeTalkToFigma(() => true);
   try {
-    const c = await connectTalkToFigma({ port: server.port, channel: "test-channel" });
+    const warnings = [];
+    const c = await connectTalkToFigma({ port: server.port, channel: "test-channel", warn: (m) => warnings.push(m) });
     expect(await c.request("script", { code: "return 1;", args: {} }, 5000)).toBe(42);
+    expect(warnings).toEqual([]);
+    c.close();
+  } finally {
+    server.stop(true);
+  }
+});
+
+test("talk-to-figma transport warns about stopped timers and still runs the script", async () => {
+  // a plugin whose delayed timers never fire: it answers everything except a script that waits on setTimeout
+  const server = fakeTalkToFigma((code) => !code.includes("setTimeout"));
+  try {
+    const warnings = [];
+    const c = await connectTalkToFigma({ port: server.port, channel: "test-channel", timerCheck: 300, warn: (m) => warnings.push(m) });
+    expect(await c.request("script", { code: "return 1;", args: {} }, 5000)).toBe(42);
+    expect(warnings.length).toBe(1);
+    expect(warnings[0]).toContain("timer did not fire");
     c.close();
   } finally {
     server.stop(true);
@@ -56,12 +73,12 @@ test("talk-to-figma transport runs a script after the font check", async () => {
 });
 
 test("talk-to-figma transport reports a stuck plugin within the font check's limit", async () => {
-  const server = fakeTalkToFigma(false);
+  const server = fakeTalkToFigma(() => false);
   try {
     const c = await connectTalkToFigma({ port: server.port, channel: "test-channel", fontCheck: 300 });
     const t0 = Date.now();
     const message = await failure(c.request("script", { code: "return 1;", args: {} }, 4000));
-    expect(message).toContain("Close and reopen the plugin");
+    expect(message).toContain("Bring the Figma window to the front");
     expect(Date.now() - t0).toBeLessThan(2000);
     c.close();
   } finally {
