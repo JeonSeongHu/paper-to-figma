@@ -25,10 +25,13 @@ export function createKit(figma) {
     if (s.kind === "radar") {
       const W = s.width || 700,
         H = s.height || 620;
+      // a radar figure is a chart: sizes follow the chart roles at its sizing width (width / placement, chart units)
+      const chartWidth = W / (s.placement || 1),
+        diagramWidth = s.figureWidth || (chartWidth * spec.REF_WIDTH.diagram) / spec.REF_WIDTH.chart;
       const root = core.AL(s.name, "VERTICAL", { fill: "#FFFFFF", pad: 1, gap: 12, cross: "CENTER" });
-      const r = charts.radar({ axes: s.axes, methods: s.methods, W, H, legendTitle: s.legend?.title, legendMode: s.legend?.placement || "corner", figureWidth: s.figureWidth || W / (s.placement || 1) });
+      const r = charts.radar({ axes: s.axes, methods: s.methods, W, H, legendTitle: s.legend?.title, legendMode: s.legend?.placement || "corner", chartWidth, figureWidth: diagramWidth });
       root.appendChild(r.node);
-      if (s.caption) root.appendChild(diagram.caption(s.caption, { ours: true, figureWidth: s.figureWidth || W / (s.placement || 1) }));
+      if (s.caption) root.appendChild(diagram.caption(s.caption, { ours: true, figureWidth: diagramWidth }));
       return root;
     }
     throw new Error(`unknown figure kind: ${s.kind}`);

@@ -23,8 +23,8 @@ export const TEXT = {
     chip: 22, // monospaced prompt inside a chip ('"A red chair"')
     data: 20, // monospaced data text: questions, model answers
     token: 19, // word inside a 56 px token cell (0.34 of the cell)
-    radarLabel: 18, // radar axis labels: the author asked for small labels close to the rim (the reading floor)
-    radarLegend: 16, // boxed radar legend in a corner, shrunk on request (secondary floor)
+    radarLabel: 18, // compact radar inside a teaser panel only (charts.radar({ compact: true })): the reading floor
+    radarLegend: 16, // legend of a compact radar (secondary floor); a radar of its own uses the chart roles
   },
   chart: {
     group: 22, // group header over several panels

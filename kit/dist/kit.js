@@ -949,9 +949,13 @@
       }
       return root;
     }
-    function radar({ axes, methods, W, H, legendTitle, legendMode = "corner", figureWidth = REF_WIDTH.diagram }) {
-      const k = figureWidth / REF_WIDTH.diagram;
-      const FS_AX = textSize("diagram", "radarLabel", figureWidth), FS_LEG = textSize("diagram", "radarLegend", figureWidth), OFF = 6 * k;
+    function radar({ axes, methods, W, H, legendTitle, legendMode = "corner", figureWidth = REF_WIDTH.diagram, chartWidth, compact = false }) {
+      const cw = chartWidth ?? figureWidth * REF_WIDTH.chart / REF_WIDTH.diagram;
+      const kc = cw / REF_WIDTH.chart;
+      const k = compact ? figureWidth / REF_WIDTH.diagram : kc;
+      const FS_AX = compact ? textSize("diagram", "radarLabel", figureWidth) : textSize("chart", "title", cw), FS_LEG = compact ? textSize("diagram", "radarLegend", figureWidth) : textSize("chart", "legend", cw), OFF = 8 * k;
+      const st = strokes("chart", cw);
+      const LN = compact ? { ours: 2.8 * k, other: 2.4 * k, marker: 4.5 * k, ring: 1.4 * k, grid: 1.2 * k, rim: 1.5 * k } : { ours: st.line * 1.2, other: st.line, marker: st.marker, ring: st.markerRing, grid: st.grid, rim: st.axis };
       const N = axes.length, ux = (i) => Math.sin(2 * Math.PI * i / N), uy = (i) => -Math.cos(2 * Math.PI * i / N);
       const ms = methods.map((m, i) => ({ ...m, color: m.color || SERIES[i] }));
       const ratio = axes.map((a) => radarRatios(ms.map((m) => a.values[m.id]), a.better === "lower"));
@@ -963,7 +967,7 @@
           const lx = Math.abs(ux(i)) < 0.3 ? ax - w / 2 : ux(i) > 0 ? ax : ax - w;
           const ly = Math.abs(uy(i)) > 0.9 ? uy(i) < 0 ? ay - h : ay : ay - h / 2;
           x02 = Math.min(x02, lx);
-          x12 = Math.max(x12, lx + w);
+          x12 = Math.max(x12, lx + w + 0.35 * FS_AX);
           y0 = Math.min(y0, ly);
           y1 = Math.max(y1, ly + h);
         });
@@ -971,14 +975,13 @@
       };
       let lg = null;
       if (legendMode !== "none") {
-        const st = strokes("chart", figureWidth * REF_WIDTH.chart / REF_WIDTH.diagram);
-        lg = AL("radar legend", "VERTICAL", { gap: 3 * k, pad: [7 * k, 10 * k, 8 * k, 10 * k], fill: "#FFFFFF", stroke: NEUTRAL.rule, sw: 1.2 * k, r: 8 * k, cross: "MIN" });
+        lg = AL("radar legend", "VERTICAL", { gap: 4 * k, pad: [8 * k, 12 * k, 9 * k, 12 * k], fill: "#FFFFFF", stroke: NEUTRAL.rule, sw: 1.2 * k, r: 8 * k, cross: "MIN" });
         if (legendTitle)
           lg.appendChild(T(legendTitle, FS_LEG, { color: NEUTRAL.title, style: "SemiBold" }));
         for (const m of [...ms].sort((a, b) => (b.ours ? 1 : 0) - (a.ours ? 1 : 0))) {
-          const L = 26 * k, Hh = 12 * k;
-          const smp = svg(`<svg width="${L}" height="${Hh}" viewBox="0 0 ${L} ${Hh}" fill="none"><path d="M${1.5 * k} ${Hh / 2} H${L - 1.5 * k}" stroke="${m.color}" stroke-width="${2.2 * k}" stroke-linecap="round"/>${marker(m.color, L / 2, Hh / 2, { marker: 3.6 * k, markerRing: 1.2 * k })}</svg>`, "sample");
-          lg.appendChild(add(AL("item", "HORIZONTAL", { gap: 6 * k }), smp, T(m.label, FS_LEG, { color: NEUTRAL.ink })));
+          const L = 30 * k, Hh = 14 * k;
+          const smp = svg(`<svg width="${L}" height="${Hh}" viewBox="0 0 ${L} ${Hh}" fill="none"><path d="M${1.5 * k} ${Hh / 2} H${L - 1.5 * k}" stroke="${m.color}" stroke-width="${LN.other * 0.95}" stroke-linecap="round"/>${marker(m.color, L / 2, Hh / 2, { marker: LN.marker * 0.85, markerRing: LN.ring })}</svg>`, "sample");
+          lg.appendChild(add(AL("item", "HORIZONTAL", { gap: 7 * k }), smp, T(m.label, FS_LEG, { color: NEUTRAL.ink })));
         }
       }
       const legendBelow = legendMode === "below" && lg ? lg.height + 8 * k : 0;
@@ -996,18 +999,18 @@
       const oi = ms.findIndex((m) => m.ours);
       let d = oi >= 0 ? `<path d="M${axes.map((_, i) => pt(i, ratio[i][oi]).map((v) => v.toFixed(2)).join(" ")).join(" L")} Z" fill="${mix(ms[oi].color, 0.12)}"/>` : "";
       for (const lv of [0.25, 0.5, 0.75])
-        d += `<path d="M${poly(lv)} Z" stroke="${NEUTRAL.grid}" stroke-width="${1.2 * k}"/>`;
+        d += `<path d="M${poly(lv)} Z" stroke="${NEUTRAL.grid}" stroke-width="${LN.grid}"/>`;
       for (let i = 0;i < N; i++)
-        d += `<path d="M${cx.toFixed(2)} ${cy.toFixed(2)} L${pt(i, 1).map((v) => v.toFixed(2)).join(" ")}" stroke="${NEUTRAL.grid}" stroke-width="${1.2 * k}"/>`;
-      d += `<path d="M${poly(1)} Z" stroke="${NEUTRAL.axis}" stroke-width="${1.5 * k}"/>`;
+        d += `<path d="M${cx.toFixed(2)} ${cy.toFixed(2)} L${pt(i, 1).map((v) => v.toFixed(2)).join(" ")}" stroke="${NEUTRAL.grid}" stroke-width="${LN.grid}"/>`;
+      d += `<path d="M${poly(1)} Z" stroke="${NEUTRAL.axis}" stroke-width="${LN.rim}"/>`;
       let marks = "";
       const order = ms.map((m, i) => i).sort((a, b) => (ms[a].ours ? 1 : 0) - (ms[b].ours ? 1 : 0));
       for (const mi of order) {
         const m = ms[mi];
-        d += `<path d="M${axes.map((_, i) => pt(i, ratio[i][mi]).map((v) => v.toFixed(2)).join(" ")).join(" L")} Z" stroke="${m.color}" stroke-width="${(m.ours ? 2.8 : 2.4) * k}" stroke-linejoin="round"/>`;
+        d += `<path d="M${axes.map((_, i) => pt(i, ratio[i][mi]).map((v) => v.toFixed(2)).join(" ")).join(" L")} Z" stroke="${m.color}" stroke-width="${m.ours ? LN.ours : LN.other}" stroke-linejoin="round"/>`;
         axes.forEach((_, i) => {
           const [x, y] = pt(i, ratio[i][mi]);
-          marks += marker(m.color, x, y, { marker: 4.5 * k, markerRing: 1.4 * k });
+          marks += marker(m.color, x, y, { marker: LN.marker, markerRing: LN.ring });
         });
       }
       plot.appendChild(svg(`<svg width="${FW}" height="${FH}" viewBox="0 0 ${FW} ${FH}" fill="none">${d}${marks}</svg>`, "radar plot"));
@@ -1037,7 +1040,7 @@
           }
         if (!best && legendMode === "corner") {
           holder.remove();
-          return radar({ axes, methods, W, H, legendTitle, legendMode: "below", figureWidth });
+          return radar({ axes, methods, W, H, legendTitle, legendMode: "below", figureWidth, chartWidth, compact });
         }
         if (!best)
           best = { x: Math.round((W - LW) / 2), y: FH + 8 * k, side: "below" };
@@ -1449,11 +1452,12 @@
         return charts.chartFigure(s);
       if (s.kind === "radar") {
         const W = s.width || 700, H = s.height || 620;
+        const chartWidth = W / (s.placement || 1), diagramWidth = s.figureWidth || chartWidth * REF_WIDTH.diagram / REF_WIDTH.chart;
         const root = core.AL(s.name, "VERTICAL", { fill: "#FFFFFF", pad: 1, gap: 12, cross: "CENTER" });
-        const r = charts.radar({ axes: s.axes, methods: s.methods, W, H, legendTitle: s.legend?.title, legendMode: s.legend?.placement || "corner", figureWidth: s.figureWidth || W / (s.placement || 1) });
+        const r = charts.radar({ axes: s.axes, methods: s.methods, W, H, legendTitle: s.legend?.title, legendMode: s.legend?.placement || "corner", chartWidth, figureWidth: diagramWidth });
         root.appendChild(r.node);
         if (s.caption)
-          root.appendChild(diagram.caption(s.caption, { ours: true, figureWidth: s.figureWidth || W / (s.placement || 1) }));
+          root.appendChild(diagram.caption(s.caption, { ours: true, figureWidth: diagramWidth }));
         return root;
       }
       throw new Error(`unknown figure kind: ${s.kind}`);

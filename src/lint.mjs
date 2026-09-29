@@ -99,7 +99,8 @@ export function lintFrame(data, { kind = "diagram", placement = 1, printWidthPt 
   info.textSizes = Object.values(sizes).sort((a, b) => b.px - a.px);
   // the largest text should reach the main role sizes of the spec; a figure whose biggest label is small was shrunk
   const biggest = Math.max(0, ...info.textSizes.map((s) => s.px));
-  const expect = kind === "chart" ? (TEXT.chart.title * W) / REF_WIDTH.chart : kind === "radar" ? (TEXT.diagram.radarLabel * W) / REF_WIDTH.diagram : (TEXT.diagram.module * W) / REF_WIDTH.diagram;
+  // a radar is a chart: its axis labels are held to the chart title size like any panel title
+  const expect = kind === "chart" || kind === "radar" ? (TEXT.chart.title * W) / REF_WIDTH.chart : (TEXT.diagram.module * W) / REF_WIDTH.diagram;
   if (biggest && biggest < expect * 0.9) warnings.push(`largest text is ${biggest}px; ${kind} figures of this width use about ${Math.round(expect)}px for their main labels (docs/figure-principles.md, size spec)`);
   for (const n of data.nodes) {
     if (n.opacity != null && n.opacity < 1) errors.push(`${n.type} "${n.name}" has opacity ${n.opacity}: viewers that ignore transparency draw it solid; blend the colour instead`);

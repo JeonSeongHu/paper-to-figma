@@ -217,11 +217,11 @@ test("plain text: captions across blank lines, column names from the header line
   expect(t.rows.map((r) => r.label)).toEqual(["Base", "Ours"]);
 });
 
-test("lint: radar labels, placement stored on the frame", () => {
-  const frame = { width: 626, height: 564, meta: { kind: "radar", placement: 0.5 }, nodes: [{ type: "TEXT", name: "PPL", segments: [{ text: "PPL", size: 15, family: "Google Sans Flex", style: "Regular" }] }] };
-  const r = lintFrame(frame, { kind: "radar", placement: 0.5 });
-  expect(r.warnings.join("\n")).not.toContain("largest text");
-  expect(r.info.format).toBe("one-column");
+test("lint: a radar is held to chart sizes", () => {
+  const frame = (size) => ({ width: 626, height: 564, meta: { kind: "radar", placement: 0.5 }, nodes: [{ type: "TEXT", name: "Recall", segments: [{ text: "Recall", size, family: "Google Sans Flex", style: "Regular" }] }] });
+  expect(lintFrame(frame(21), { kind: "radar", placement: 0.5 }).warnings.join("\n")).not.toContain("largest text");
+  expect(lintFrame(frame(15), { kind: "radar", placement: 0.5 }).warnings.join("\n")).toContain("largest text is 15px");
+  expect(lintFrame(frame(21), { kind: "radar", placement: 0.5 }).info.format).toBe("one-column");
 });
 
 test("TeX: the paper's own macros survive (method names, TODO markers)", () => {

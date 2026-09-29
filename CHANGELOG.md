@@ -5,6 +5,14 @@ and the project uses [semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Radars drew their labels at the reading floor and their lines thinner than charts: the small sizes requested for a
+  radar inside one teaser panel had become the default, and a radar figure was sized on the diagram reference width.
+  A radar now uses the chart roles (panel titles, legend, line and marker sizes); `compact: true` keeps the small
+  sizes for a radar squeezed into a panel. Lint holds radars to chart sizes again.
+- Radar axis names ending in an arrow no longer lose the glyph at the frame edge.
+
 ## [0.1.0] - 2026-09-29
 
 ### Added
