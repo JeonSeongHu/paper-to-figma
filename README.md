@@ -43,7 +43,7 @@ hands that work to an agent and holds it to rules measured on figures researcher
 
 ## Gallery
 
-All four come from the synthetic example paper in [`examples/anon-paper`](examples/anon-paper): its method and numbers are invented.
+All three come from the synthetic example paper in [`examples/anon-paper`](examples/anon-paper): its method and numbers are invented.
 
 <table>
 <tr>
@@ -52,10 +52,6 @@ All four come from the synthetic example paper in [`examples/anon-paper`](exampl
 <tr>
 <td width="50%"><img src="docs/assets/examples/training-curves.png" alt="Training curves"><br><sub>Training curves, laid out as a one-column figure.</sub></td>
 <td width="50%"><img src="docs/assets/examples/per-task-bars.png" alt="Per-task success"><br><sub>Per-task success, every value checked against the paper's table.</sub></td>
-</tr>
-<tr>
-<td width="50%"><img src="docs/assets/examples/summary-radar.png" alt="Summary radar"><br><sub>Summary radar with each axis scaled by its best method.</sub></td>
-<td width="50%" valign="top"><sub>The radar keeps the axes where the proposed method is not the best. Figures report what the paper reports.</sub></td>
 </tr>
 </table>
 
