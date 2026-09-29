@@ -5,6 +5,10 @@
   "type": "module",
   "description": "Verified paper figures in Figma from a paper's text: a figure kit with a measured size spec, a local Figma bridge, evidence checks against the paper, and PDF checks for strict viewers.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JeonSeongHu/paper-to-figma.git"
+  },
   "engines": {
     "bun": ">=1.2.0"
   },
