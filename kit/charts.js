@@ -1,5 +1,5 @@
 // Charts drawn as native Figma vectors and text: line panels (linear, log or broken axis), grouped bars, a radar, and
-// a grid of panel groups with one legend. Ported from figures the author approved in 2026-09.
+// a grid of panel groups with one legend. Ported from reviewed figures (2026-09).
 import * as S from "./spec.js";
 import { niceTicks, fixedTicks, tickLabel, radarRatios, highestClearY } from "./math.js";
 
@@ -387,7 +387,7 @@ export function createCharts(core) {
   // the bottom corner where it overlaps the radar area but touches no label and no ring.
   // A radar is a chart: its labels, lines and markers follow the chart roles at the chart sizing width (chartWidth; from
   // a diagram's figureWidth when a radar sits inside a diagram). compact keeps the small labels of a radar squeezed into
-  // a teaser panel; use it only when asked, never as the default for a figure of its own.
+  // a teaser panel; it is for a radar inside another figure, never for a radar figure of its own.
   function radar({ axes, methods, W, H, legendTitle, legendMode = "corner", figureWidth = S.REF_WIDTH.diagram, chartWidth, compact = false }) {
     const cw = chartWidth ?? (figureWidth * S.REF_WIDTH.chart) / S.REF_WIDTH.diagram;
     const kc = cw / S.REF_WIDTH.chart;

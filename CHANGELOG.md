@@ -5,10 +5,16 @@ and the project uses [semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- The skill and the figure principles are now in English, the reference version. A Korean translation of the
+  principles lives in `docs/figure-principles.ko.md`.
+- Cases in the principles describe what went wrong in a figure and what fixed it, without quoting feedback.
+
 ### Fixed
 
-- Radars drew their labels at the reading floor and their lines thinner than charts: the small sizes requested for a
-  radar inside one teaser panel had become the default, and a radar figure was sized on the diagram reference width.
+- Radars drew their labels at the reading floor and their lines thinner than charts: the small sizes meant for a
+  radar inside a teaser panel had become the default, and a radar figure was sized on the diagram reference width.
   A radar now uses the chart roles (panel titles, legend, line and marker sizes); `compact: true` keeps the small
   sizes for a radar squeezed into a panel. Lint holds radars to chart sizes again.
 - Radar axis names ending in an arrow no longer lose the glyph at the frame edge.

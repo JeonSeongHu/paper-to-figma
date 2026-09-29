@@ -1,416 +1,419 @@
-# 논문 figure 원칙
+# Figure principles
 
-## 읽는 법
+[한국어 번역](figure-principles.ko.md) (this English version is the reference; where the two differ, this one holds)
 
-이 문서는 두 층으로 이루어짐.
+## How to read this
 
-- **원칙 (1~5장):** 어떤 논문, 어떤 figure에도 적용되는 일반 규칙임. 원칙마다 규칙, 적용, 사례를 둠. 사례는 저자가 실제 figure를 고치며 내린 결정이고, 원칙이 왜 필요한지 보여 주는 근거임. 사례의 결정을 다른 figure에 그대로 쓰지 않고, 원칙에서 다시 판단함.
-- **기본값 (6장):** 원칙을 구현한 구체적인 수치와 스타일임(글자 크기, 선 굵기, 팔레트, 글꼴, 단어 수). kit(`kit/spec.js`)과 자동 검사가 이 값을 씀. 논문마다 바꿀 수 있고, 바꿀 때는 이유를 보고서에 적음.
+The document has two layers.
 
-에이전트는 figure를 만들기 전에 이 문서를 읽음. 원칙과 다르게 해야 하면 어느 원칙을 왜 벗어나는지 보고서에 적음.
+- **Principles (sections 1 to 5)** hold for any paper and any figure. Each principle has a rule, how to apply it, and cases. A case is a correction made to a real figure: it shows why the principle exists. A case is not copied to another figure; the decision is made again from the principle.
+- **Defaults (section 6)** are the numbers and styles that implement the principles (text sizes, line widths, palette, fonts, word budgets). The kit (`kit/spec.js`) and the checks use them. A paper may change them; the report says why.
 
-## 1. 정보: 무엇을 담는가
+An agent reads this document before making figures. When a figure departs from a principle, the report names the principle and the reason.
 
-### 원칙 1. figure 하나는 질문 하나에 답하고, 정보의 단위는 figure의 종류가 정함
+## 1. Content: what goes in
 
-- **규칙:** figure를 만들기 전에 그 figure가 답하는 질문을 한 문장으로 적고, 종류를 정함. 종류마다 담는 정보의 단위가 다름. 단위가 맞지 않는 내용은 다른 figure나 캡션으로 보냄.
-- **적용:** 아래 표를 기준으로 담을 것과 뺄 것을 정함. 같은 개념이 여러 figure에 나오면 teaser는 개념만, overview는 흐름을, 세부 figure는 구조를 보여 줌.
+### Principle 1. One figure answers one question, and its kind sets the unit of information
 
-| 종류 | 단위 | 담는 것 | 빼는 것 |
+- **Rule:** Before drawing, write the question the figure answers in one sentence and decide its kind. Each kind carries a different unit of information; what does not fit that unit goes to another figure or to the caption.
+- **Apply:** Use the table to decide what goes in and what stays out. When one idea appears in several figures, the teaser shows the idea, the overview the flow, and the detail figure the structure.
+
+| Kind | Unit | Put in | Leave out |
 |---|---|---|---|
-| teaser | 논문의 주장 하나 | 기존 방식과 제안 방식의 구조 차이, 필요하면 핵심 결과 하나 | 방법 용어 라벨, 반복 횟수 표시, 서브모듈 세부 |
-| 방법론 overview | 모듈과 흐름 | 입력과 출력, 이름 붙은 모듈, 흐름, 학습 방식이 주장의 일부면 학습하는 부분과 고정한 부분 | 레이어 구조, loss 식, 하이퍼파라미터 |
-| 세부 방법론 | 한 모듈의 내부 | 텐서 모양, 연산, 조건 입력, mask 같은 구조, 기호 범례 | 다른 모듈의 세부, 결과 수치 |
-| 결과 그래프 | 지표 하나당 칸 하나 | 모든 데이터 점, 축 제목과 단위, 좋아지는 방향 | 개념 아이콘, 데이터에 없는 추세선 |
-| 요약 비교(레이더 등) | 여러 지표 한눈에 | 비교 방법 전체와 모든 지표, 정규화 방식 | 불리한 지표를 뺀 축 선택 |
-| 정성 예시 | 입력과 출력의 실제 사례 | 원문 그대로의 입력과 출력, 예시 1~2개 | 고친 출력, 지어낸 예시 |
+| Teaser | One claim of the paper | The structural difference between the prior and the proposed approach; one key result if needed | Method jargon, repeat counts, submodule detail |
+| Method overview | Modules and flow | Inputs and outputs, named modules, the flow; trained and frozen parts when training is part of the claim | Layer structure, loss formulas, hyperparameters |
+| Method detail | Inside one module | Tensor shapes, operations, conditioning inputs, structures such as masks, a symbol legend | Other modules' detail, results |
+| Result chart | One panel per metric | Every data point, axis titles and units, the direction that is better | Concept icons, trend lines not in the data |
+| Summary comparison (radar and similar) | Many metrics at a glance | All compared methods and all metrics, the normalisation | Axes chosen to hide unfavourable metrics |
+| Qualitative example | Real inputs and outputs | Inputs and outputs exactly as printed, one or two examples | Corrected outputs, invented examples |
 
-- **사례:**
-  - teaser에 "×T denoise"와 방법 용어 라벨을 넣었다가, 그림 전체에 해당하는 것처럼 보인다는 지적으로 뺐음.
-  - attention mask는 teaser에서 빼고 세부 figure에 그렸음.
+- **Cases:**
+  - A teaser labelled "×T denoise" and method terms, which read as if they applied to the whole figure; the labels were removed.
+  - An attention mask was taken out of a teaser and drawn in a detail figure.
 
-### 원칙 2. 저자가 적어 둔 figure 설명을 요구 사항으로 따름
+### Principle 2. The authors' own description of a figure is a requirement
 
-- **규칙:** 논문에 figure 자리표시나 스케치 설명이 있으면(예: "to be drawn" 상자, 레이아웃과 보여 줄 내용을 적은 문단) 저자의 요구 사항으로 봄. 설명을 따르고, 따르지 않은 부분은 이유를 보고서에 적음.
-- **적용:**
-  - `prepare`가 figure 환경 안의 설명을 `index.figures[].sketch`에 담음. 계획을 세우기 전에 읽음.
-  - 설명이 요구한 레이아웃(레인 수, 패널 구성)과 보여 줄 내용(무엇을 한눈에 봐야 하는지)을 figure 계획의 첫 줄에 적음.
-  - 설명에 적힌 수치가 예시("e.g.")이거나 대응하는 표가 비어 있으면 수치는 그리지 않음(원칙 7).
-- **사례:** 자리표시가 레이아웃과 보여 줄 내용을 적어 두었는데, 에이전트가 이를 따르지 않고 데이터 경로 한 줄만 그렸음. 저자가 보여 주려던 시간에 따른 동작이 figure에서 빠졌음.
+- **Rule:** When the paper holds a figure placeholder or a sketch (a "to be drawn" box, a paragraph describing the layout and what the figure should show), treat it as the authors' requirements. Follow it, and report any part not followed with the reason.
+- **Apply:**
+  - `prepare` keeps the text inside each figure environment in `index.figures[].sketch`. Read it before planning.
+  - Put the layout the sketch asks for (lanes, panels) and what it wants seen at a glance in the first line of the figure plan.
+  - Numbers in a sketch that are examples ("e.g.") or whose table is still empty are not drawn (principle 7).
+- **Case:** A placeholder described the layout and what the figure should show; the figure drawn instead was a single data path, and the behaviour over time the authors wanted to show was missing.
 
-### 원칙 3. 그림이 이미 보여 주는 것을 글로 반복하지 않음
+### Principle 3. Do not write what the drawing already shows
 
-- **규칙:** 라벨은 그림으로 보일 수 없는 정보만 더함. 그림과 라벨이 같은 말을 하면 라벨을 뺌.
-- **적용:**
-  - 토큰 여러 개를 그렸으면 "256 patch tokens" 같은 라벨을 붙이지 않고, 개수는 캡션에서 말함. 개수 자체가 figure의 요점일 때만 짧은 라벨로 씀.
-  - 모든 방법에 공통인 설명은 범례가 아니라 캡션에 씀.
-  - 여러 칸이나 패널에 같은 제목이 반복되면 그룹 제목 하나로 합치고, 칸 이름은 달라지는 부분으로 씀.
-- **사례:**
-  - "256 patch tokens라는 게 너무 redundant함"이라는 지적을 받았음.
-  - 범례에 모든 방법에 공통인 설정을 한 줄 넣었다가 "짜침"이라는 지적으로 캡션에 넣었음.
-  - 과제 여덟 개씩 두 칸으로 나눈 막대그래프의 두 칸 제목이 같았음.
+- **Rule:** A label adds only what the drawing cannot show. When a label and the drawing say the same thing, drop the label.
+- **Apply:**
+  - Several drawn tokens need no "256 patch tokens" label; the count goes to the caption. A short count label is used only when the count is the point of the figure.
+  - A setting shared by all methods goes to the caption, not to the legend.
+  - When several panels share one title, put it on the group and name each panel by what differs.
+- **Cases:**
+  - A "256 patch tokens" label repeated what the drawn tokens already showed.
+  - A legend line held a setting shared by all methods; it moved to the caption.
+  - Two panels of a bar chart, eight tasks each, carried the same title.
 
-### 원칙 4. 라벨은 짧게, 설명은 캡션으로
+### Principle 4. Short labels; explanations go to the caption
 
-- **규칙:** 다이어그램 라벨은 1~4단어 명사구임. 설명 문장은 캡션에 씀. figure 종류마다 라벨 단어 수에 상한을 둠(6장). 문장으로 설명하고 싶은 관계는 시각 부호로 그림.
-- **적용:**
-  - 없는 연결("입력이 아님", "전달하지 않음")은 연결을 그리지 않거나, 끊긴 화살표(`kit.diagram.blockedArrow`)로 그림.
-  - 선택 입력과 대체 경로는 점선 외곽선이나 점선 화살표로 그리고(`element(..., { dashed: true })`), "(optional)", "if ... is not ready" 같은 글자를 쓰지 않음.
-  - 주파수, 개수 같은 설정값은 캡션에 씀. figure의 요점일 때만 라벨로 둠.
-  - `lint`가 단어 수와 4단어를 넘는 라벨을 셈. 인용한 실제 예시(고정폭 글꼴)는 세지 않음.
-- **사례:** 여러 번 고쳐 확정한 teaser와 overview는 라벨이 각각 23단어와 33단어였음. 규칙 없이 만든 teaser와 overview는 68단어와 61단어였고, "not an input of the policy", "supervision only, never passed to ...", "if no query is ready" 같은 문장 라벨이 있었음.
+- **Rule:** A diagram label is a noun phrase of one to four words. Sentences go to the caption. Each figure kind has a label word budget (section 6). A relation one would explain in a sentence is drawn as a visual code.
+- **Apply:**
+  - A missing link ("not an input", "not passed on") is either not drawn or drawn as a blocked arrow (`kit.diagram.blockedArrow`).
+  - Optional inputs and fallback paths get a dashed outline or a dashed arrow (`element(..., { dashed: true })`), never "(optional)" or "if ... is not ready".
+  - Settings such as rates and counts go to the caption, unless they are the point of the figure.
+  - `lint` counts label words and flags labels over four words. Quoted examples in the monospaced face do not count.
+- **Case:** A reviewed teaser and overview carried 23 and 33 label words. The same kinds of figure made without the rule carried 68 and 61, including sentence labels such as "not an input of the policy", "supervision only, never passed to ..." and "if no query is ready".
 
-### 원칙 5. 구체적으로 보이고, 구성 요소는 역할로 부름
+### Principle 5. Show the real thing, and name parts by their role
 
-- **규칙:** 자리 표시 라벨 대신 실제 대상을 보임. 입력 예시와 과제 이름은 논문에 나온 그대로 씀. 다이어그램의 구성 요소는 모델 이름이 아니라 역할로 부름(VLM, action expert, image encoder). 모델 이름은 캡션과 본문에 씀.
-- **적용:**
-  - "Language instruction" 대신 논문이 인용한 실제 지시문을 고정폭 글꼴로 넣음.
-  - 논문에 예시가 없으면 라벨로 두고, 예시를 지어내지 않음(원칙 7).
-  - 모델 이름을 쓰는 경우는 네 가지임. 결과 그래프와 표의 비교 방법 이름(독자가 방법을 구분해야 함), 제안 방법 이름, 모델 정체가 주장의 일부인 경우(같은 구조에서 백본만 바꾼 실험), 사용자가 요청한 경우임.
-  - 방법 이름은 논문에 나온 그대로 쓰고 약어를 새로 만들지 않음.
-- **사례:**
-  - 자리 표시 라벨을 쓴 overview에 "실제 예시가 있으면 좋음"이라는 요청을 받았음.
-  - 백본과 비교 정책을 모델 이름으로 부른 다이어그램에 "직접적인 모델 이름은 자제"라는 지적을 받았음.
+- **Rule:** Show the real object instead of a placeholder label; quote examples and task names exactly as the paper prints them. Name diagram parts by their role (VLM, action expert, image encoder), not by model; model names go to the caption and the text.
+- **Apply:**
+  - Put the instruction the paper quotes, in the monospaced face, where a placeholder would say "Language instruction".
+  - When the paper gives no example, keep the label; never invent one (principle 7).
+  - Model names appear in four cases only: method names in result charts and tables (readers must tell methods apart), the proposed method's name, a model whose identity is part of the claim (the same architecture with a different backbone), and when the user asks.
+  - Method names are written as the paper writes them; no new abbreviations.
+- **Cases:**
+  - An overview used a placeholder label where the paper quoted a real instruction.
+  - A diagram named its backbone and its baseline policy by model name instead of by role.
 
-### 원칙 6. 보이는 것은 그림으로 그림
+### Principle 6. Draw what can be drawn
 
-- **규칙:** 입력과 중간 표현은 종류가 모양으로 보이게 그림. 글자는 그림으로 나타낼 수 없는 이름에만 씀.
-- **적용:** `kit.diagram.icon`의 벡터 아이콘을 씀. 이모지 글자는 PDF에서 래스터로 박히거나 빠지므로 쓰지 않음(원칙 21).
+- **Rule:** Draw inputs and intermediate representations so that their kind shows in their shape. Use text only for names a drawing cannot carry.
+- **Apply:** Use the vector icons of `kit.diagram.icon`. Emoji characters are rasterised or dropped in PDFs (principle 21).
 
-| 대상 | 그림 |
+| What | Drawing |
 |---|---|
-| 이미지 한 장, 관측 | `image` 아이콘, 논문 이미지가 있으면 그 이미지 |
-| 여러 시점, 여러 프레임 | `frames`(겹친 틀) |
-| 시연 영상 | `film`(필름 띠) |
-| 시간, 나이, 지연 | `clock` |
-| 로봇 상태, 고유 수용 감각 | `arm` |
-| 기록, 메모리 | `memory`(저장 원통) |
-| 지시문 | 실제 예시 인용 칩. 예시가 없을 때만 `text` 아이콘 |
-| 토큰, latent | 네모 쌓기(`tokenStack`) |
+| One image, an observation | the `image` icon, or the paper's own image |
+| Several views or frames | `frames` (stacked frames) |
+| A demonstration video | `film` (a film strip) |
+| Time, age, delay | `clock` |
+| Robot state, proprioception | `arm` |
+| History, memory | `memory` (a storage cylinder) |
+| An instruction | a chip with the quoted example; the `text` icon only when there is no example |
+| Tokens, latents | a stack of squares (`tokenStack`) |
 
-- **사례:** 입력 네 개를 모두 같은 글자 칩으로 그려 이미지, 지시문, 기록이 모양으로 구분되지 않았음. 시간 임베딩을 모듈과 같은 크기의 글자 상자로 그렸음. "좀 더 시각적으로, 여러 정사각형을 쌓거나 아이콘을 적극적으로"라는 요청을 받았음.
+- **Case:** Four inputs drawn as identical text chips did not show which was an image, an instruction or a history, and a time embedding was a text box as large as a module.
 
-### 원칙 7. figure 속 모든 사실은 논문에서 그대로 옴
+### Principle 7. Every fact in a figure comes from the paper as printed
 
-- **규칙:** 수치, 모델 출력, 벤치마크 입력, 예시는 논문에 적힌 그대로 씀. 없는 것은 만들지 않고, 틀려 보이는 것은 고치지 않고 보고함.
-- **적용:**
-  - spec의 값마다 출처(표 칸이나 본문 인용)를 달고, `check`가 인쇄된 자릿수까지 대조함. 값은 인쇄된 자릿수 그대로 표기함.
-  - 다이어그램 안의 수치(teaser의 결과 패널 등)도 spec으로 쓰고 `script --spec`으로 넘김.
-  - 불리한 결과를 빼지 않음. 정규화한 그림은 절대값(표나 캡션)과 함께 둠.
-  - 논문 밖 데이터는 `external`로 표시하고 출처를 적음.
-  - 에이전트의 해석은 요구 사항처럼 넣지 않고 해석이라고 밝힘.
-  - 너무 작아 보이지 않는 오차처럼 그리지 않은 정보는 그리지 않았다고 보고함.
-- **사례:**
-  - 문법이 틀린 실제 모델 출력도 고치지 않고 두고, 예시 교체를 제안했음.
-  - 공동 연구자가 점 하나를 빼자고 했을 때 그림용 데이터에서만 빼고 원자료는 남겼음.
+- **Rule:** Numbers, model outputs, benchmark inputs and examples are written as the paper prints them. Nothing is invented; what looks wrong is reported, not fixed.
+- **Apply:**
+  - Every value in a spec cites its source (a table cell or a quoted clause), and `check` compares it at the printed precision. Values are printed as the paper prints them.
+  - Numbers inside a diagram (a result panel in a teaser) are a spec too, passed with `script --spec`.
+  - Unfavourable results stay. A normalised view comes with the absolute values (a table or the caption).
+  - Data from outside the paper is marked `external` with its source.
+  - An interpretation by the agent is labelled as such, never presented as a requirement.
+  - Information left out of the drawing (error bars too small to see) is reported as left out.
+- **Cases:**
+  - A model output with a grammar error stayed as printed, with a note suggesting another example.
+  - A point removed from a plot on a co-author's advice was removed from the plotted data only; the source data kept it.
 
-## 2. 부호화: 어떻게 나타내는가
+## 2. Encoding: how it is shown
 
-### 원칙 8. 시각 변수 하나에는 뜻 하나
+### Principle 8. One visual variable, one meaning
 
-- **규칙:** 색, 도형, 선 모양, 기호, 위치가 각각 무엇을 뜻하는지 figure마다 정함. 한 변수에 두 뜻을 싣지 않고, 같은 뜻에는 논문 전체에서 같은 부호를 씀. 그래프와 다이어그램도 같은 팔레트를 공유함.
-- **적용:**
-  - 색이 무엇을 뜻하는지(방법, 모달리티, 강조 가운데 하나) 먼저 정하고, figure 안에서 읽히게 함(원칙 12).
-  - 위치도 시각 변수임. 한 축이 시간을 뜻하면 그 축 위의 모든 요소는 시각을 뜻함. 시간이 아닌 순서(문맥 창의 구성, 처리 단계)를 같은 축에 늘어놓지 않음.
-  - 그래프의 방법 색은 `check`가 `work/<논문>/palette.json`에 기록함. 다이어그램은 `kit.diagram.meaning(색, 뜻)`으로 색의 뜻을 선언하고, `verify`가 그래프의 방법 색과 대조함.
-  - 도형은 뜻 사전을 따름. 이름 붙은 모듈은 둥근 사각형, 인코더와 디코더는 사다리꼴, 토큰은 작은 사각형, 텐서와 이미지는 각진 사각형임.
-  - 선 모양도 뜻이 하나씩임. 주 흐름은 굵은 실선 화살표, 조건 입력과 선택 경로는 점선, 끊긴 연결은 ✕로 끝나는 점선임.
-  - 빨강과 파랑처럼 위치를 가리키는 색은 위치 표시와 끊긴 연결 표시에만 씀. 이미지의 색 지도(viridis 등)와 겹치지 않는 색을 고름.
-- **사례:**
-  - 한 논문의 그래프에서 샌드가 비교 방법 하나를 뜻했는데, 같은 논문 다이어그램에서는 샌드가 모달리티나 보조 입력을 뜻했음. figure마다 순서대로 색을 나눠 준 탓에 샌드가 figure마다 다른 방법을 뜻한 경우도 있었음.
-  - 두 레인 figure에서 아래 레인의 가로 위치는 시각을 뜻했는데, 위 레인의 가로 위치는 문맥 창 속 순서를 뜻했음. 그래서 매 질의마다 동작하는 모듈이 시간의 맨 끝에 있는 것처럼 보였음.
+- **Rule:** Decide for each figure what colour, shape, line style, symbol and position mean. No variable carries two meanings, and one meaning keeps one code across the whole paper. Charts and diagrams share one palette.
+- **Apply:**
+  - Decide first what colour stands for (methods, modalities, or emphasis) and make it readable inside the figure (principle 12).
+  - Position is a visual variable too. When an axis means time, everything along it means a moment; an order that is not time (what a context window holds, processing stages) is not laid out on the same axis.
+  - `check` records the colour of each method in `work/<paper>/palette.json`. A diagram declares its colour meanings with `kit.diagram.meaning(colour, meaning)`, and `verify` compares them with the charts.
+  - Shapes follow one vocabulary: rounded rectangles for named modules, trapezoids for encoders and decoders, small squares for tokens, square-cornered rectangles for tensors and images.
+  - Line styles have one meaning each: a thick solid arrow for the main flow, dashed lines for conditioning inputs and optional paths, a dashed line ending in ✕ for a blocked link.
+  - Colours that point at locations (red, blue) are used only for locations and blocked links, and differ from the colour maps of any images (viridis and similar).
+- **Cases:**
+  - In one paper, sand meant a baseline method in the charts and a modality or an auxiliary input in the diagrams. Handing out colours per figure in list order also made sand mean a different method in each chart.
+  - In a two-lane figure, horizontal position meant time in one lane and order inside a context window in the other, so a module that runs at every query looked as if it ran at the end of time.
 
-### 원칙 9. 시각 위계는 세 단계
+### Principle 9. Three levels of visual hierarchy
 
-- **규칙:** 모든 요소를 세 단계 가운데 하나로 정함. 아래 단계 요소는 위 단계 요소보다 크거나 진하지 않음. 강조는 figure가 주장하는 대상에만 둠.
+- **Rule:** Every element belongs to one of three levels. A lower-level element is never larger, stronger or longer than a higher-level one. Emphasis goes only to what the figure argues for.
 
-| 단계 | 대상 | 모양 | 글자 |
+| Level | What | Shape | Text |
 |---|---|---|---|
-| 1 주장 | 제안 방법의 핵심 모듈이나 경로. figure에 하나 | 강조색 채움 | 블록 크기, SemiBold |
-| 2 제안 방법의 나머지 | 다른 구성 요소 | 흰 바탕에 강조색 외곽선, 또는 옅은 채움 | 모듈 크기, Medium |
-| 3 맥락 | 입력, 비교 방법, 대체 경로, 공통 부분 | 회색, 외곽선이나 점선, 아이콘 | 주석 크기 |
+| 1 Claim | The key module or path of the proposed method; one per figure | Accent fill | Block size, SemiBold |
+| 2 Method | The other parts of the proposed method | White with an accent outline, or a light fill | Module size, Medium |
+| 3 Context | Inputs, baselines, fallback paths, shared parts | Gray, outline or dashed, icons | Note size |
 
-- **적용:**
-  - kit 부품이 단계를 기록함(`element(label, level, ...)`, `keyBlock`은 1, `moduleBox`와 `trapezoid`는 2, `chip`과 `icon`은 3). `lint`가 단계별 글자 크기를 비교하고 1단계가 둘 이상이면 경고함.
-  - 크기뿐 아니라 면적과 길이도 위계를 따름. 없는 연결(끊긴 화살표)이나 대체 경로 같은 3단계 요소를 figure 폭 대부분에 걸쳐 그리지 않음. 끊긴 화살표는 모듈 간격 정도로 짧게 그리고, `lint`는 폭의 15%보다 긴 끊긴 화살표를 경고함.
-  - 사람 성능이나 이론 상한 같은 기준값은 비교 대상이 아니라 맥락이므로, 막대 대신 기준선과 짧은 이름으로 그림. 기준값 막대가 figure에서 가장 큰 요소가 되지 않게 함.
-  - 비교 figure에서 공통 부분을 어떻게 칠할지는 figure의 목적으로 정하고, 한 figure 안에서 섞지 않음.
-    - **제안 방법을 주장하는 figure(teaser 등):** 비교 패널 전체를 3단계로 낮춤. 공통 부분도 포함함. 차이는 강조의 차이로 읽힘.
-    - **방법들을 중립적으로 비교하거나 분석하는 figure:** 공통 부분은 모든 패널에서 같은 색으로 두고, 달라지는 부분만 다르게 칠함. 차이는 구조의 차이로 읽힘.
-- **사례:**
-  - 기존 방식 (a)와 제안 방식 (b)를 나란히 둔 teaser에서, 저자는 (a)를 전부 옅은 회색으로 두고 색은 (b)에만 쓰는 쪽을 확정했음. 이 figure의 목적이 제안 방식을 주장하는 것이었기 때문임.
-  - 대체 경로 상자와 시간 임베딩 상자(3단계)가 핵심 projector(2단계)와 같은 글자 크기와 굵기라 위계가 없었음.
+- **Apply:**
+  - Kit parts record their level (`element(label, level, ...)`; `keyBlock` is 1, `moduleBox` and `trapezoid` 2, `chip` and `icon` 3). `lint` compares text sizes across levels and warns when more than one element is level 1.
+  - Area and length follow the hierarchy too. A level-3 element such as a blocked link or a fallback path never spans most of the figure: a blocked arrow is about one module gap long, and `lint` warns above 15% of the width.
+  - Reference values such as human performance or a theoretical bound are context: draw them as a reference line with a short name, not as a bar, so that they never become the largest element.
+  - In a comparison figure, the purpose decides how shared parts are coloured, and one figure never mixes the two ways:
+    - **A figure that argues for the proposed method (a teaser):** the whole compared panel drops to level 3, shared parts included; the difference reads as a difference in emphasis.
+    - **A neutral comparison or analysis:** shared parts keep one colour in every panel and only what differs changes; the difference reads as a difference in structure.
+- **Cases:**
+  - A teaser set a prior approach (a) beside the proposed one (b). Panel (a) went fully light gray and colour stayed in (b), because the figure argued for the proposed approach.
+  - A fallback box and a time-embedding box (level 3) had the same text size and weight as the key projector (level 2), so the figure had no hierarchy.
 
-### 원칙 10. 구분에 쓰는 채널은 필요한 만큼만
+### Principle 10. Only as many channels as it takes to tell methods apart
 
-- **규칙:** 비교 대상을 구분하는 채널(색, 선 모양, 마커 모양)은 구분에 필요한 최소한만 씀. 한 번 고른 채널은 figure와 논문 전체에서 유지함.
-- **적용:**
-  - 색만으로 명도 차이까지 분명하면(청록, 샌드, 회색) 색만 씀.
-  - 색만으로 구분하기 어려우면(방법이 많거나 명도가 비슷함) 선이나 막대 옆에 직접 이름을 씀.
-  - 방향이 중요한 지표에는 좋아지는 방향(↑↓)을 제목에 씀.
-- **사례:** 방법마다 선 모양과 마커 모양을 다르게 했다가 "필요 없을 것 같음"이라는 지적으로 색만 남겼음.
+- **Rule:** Use the fewest channels (colour, line style, marker shape) that tell compared methods apart, and keep the chosen ones across the figure and the paper.
+- **Apply:**
+  - When colour alone differs clearly in lightness too (teal, sand, gray), use colour alone.
+  - When colour is not enough (many methods, similar lightness), write names directly beside lines or bars.
+  - Put the better direction (↑↓) in the title of every metric where direction matters.
+- **Case:** Methods first differed by line style and marker shape as well as colour; the extra channels added nothing and were removed.
 
-### 원칙 11. 모든 모듈에 해당하는 속성은 소수 쪽만 표시함
+### Principle 11. A property every module has is marked on the rarer side only
 
-- **규칙:** 학습과 고정처럼 모든 모듈이 가지는 속성은 소수 쪽만 표시함. 학습 방식이 figure의 주장이 아니면 캡션에 씀.
-- **적용:** `kit.diagram.pinStates(root, [{ node, state }], fw)`에 모든 모듈의 상태를 넘기면 드문 쪽에만 배지를 달고 그 기호 하나의 범례를 돌려줌. 대부분 학습이면 고정 모듈에만 눈송이, 대부분 고정이면 학습 모듈에만 불꽃임. `lint`는 같은 배지가 모듈 절반을 넘으면 경고함.
-- **사례:** 모듈 여섯 개 가운데 다섯 개에 불꽃, 한 개에 눈송이를 달았다가 "다소 과하다"는 지적을 받았음. 눈송이 하나만 달아도 같은 정보임.
+- **Rule:** Mark a property that every module has (trained or frozen) only on the rarer side. When training is not part of the figure's claim, say it in the caption.
+- **Apply:** Pass every module's state to `kit.diagram.pinStates(root, [{ node, state }], fw)`: it badges only the rarer state and returns a legend with that one symbol. Mostly trained: snowflakes on the frozen modules only. Mostly frozen: flames on the trained ones only. `lint` warns when one badge sits on more than half of the modules.
+- **Case:** Five of six modules carried a flame and one a snowflake; the single snowflake carried the same information.
 
-### 원칙 12. figure 안의 모든 부호는 figure 안에서 읽힘
+### Principle 12. Every code in a figure can be read in the figure
 
-- **규칙:** 아이콘, 색, 선 모양, 기호, 생략 표시("…")는 figure 안에서 뜻을 알 수 있어야 함. 처음 나오는 곳에 이름을 붙이거나 범례에 넣음. 캡션은 설명을 맡고, 부호를 해독하는 일은 맡지 않음. 글자를 줄이는 원칙(원칙 4)과 그림으로 그리는 원칙(원칙 6)보다 이 원칙이 우선함.
-- **적용:**
-  - 같은 부호가 여러 번 나오면 첫 번째에만 이름을 붙임. 모듈 안에 넣은 아이콘(칸 안의 시계)도 한 번은 이름을 붙임.
-  - 모양만 다르고 이름이 없는 요소 두 종류(회색 칸과 청록 칸)는 둘 다 이름이나 범례가 있어야 함.
-  - "…"은 무엇이 이어지는지 알 수 있는 자리에만 씀(같은 칸이 반복되는 줄의 끝).
-  - 부호 이름은 1~2단어이고 단어 예산에 들어가지만, 예산을 지키려고 이름을 빼지 않음. 예산을 넘으면 설명 라벨을 캡션으로 보냄.
-  - `lint`는 이름도 범례도 없는 아이콘 종류를 경고함.
-  - 렌더를 볼 때 캡션을 가리고 모든 부호를 읽어 봄.
-- **사례:** 글자를 줄이고 아이콘을 쓰라는 규칙만 적용했더니, 호출 칸 안의 시계 아이콘이 시간 임베딩이라는 것, 회색 칸이 입력이 없을 때 쓰는 기본값이라는 것을 figure만 보고는 알 수 없었음. 라벨 단어 수는 상한 안이었음.
+- **Rule:** Icons, colours, line styles, symbols and ellipses ("…") can be decoded from the figure itself. Name each one where it first appears, or put it in a legend. The caption explains; it does not decode symbols. This principle comes before cutting words (principle 4) and before drawing instead of writing (principle 6).
+- **Apply:**
+  - When a code repeats, name its first use only. An icon inside a module (a clock inside a call box) is named once too.
+  - Two kinds of unnamed elements that differ only in look (gray cells and teal cells) both need a name or a legend entry.
+  - Use "…" only where it is clear what continues (at the end of a row of repeated cells).
+  - Code names are one or two words and count toward the word budget, but a name is never dropped to meet the budget; explanatory labels move to the caption instead.
+  - `lint` flags an icon kind that has neither a name nor a legend entry.
+  - When reviewing the render, cover the caption and read every code.
+- **Case:** With only the rules to cut words and to draw icons applied, a reader could not tell from the figure that a clock inside a call box was a time embedding, or that gray cells were the default used when no input is ready. The label count was within its budget.
 
-## 3. 배치
+## 3. Layout
 
-### 원칙 13. 형식과 비율을 먼저 정함
+### Principle 13. Decide the format and aspect first
 
-- **규칙:** 논문 figure는 들어갈 자리에 맞는 두 형식 가운데 하나임. 형식을 먼저 정하고 그 비율 안에 내용을 배치함.
+- **Rule:** A paper figure takes one of two formats, set by where it goes. Decide the format first and lay the content out inside its aspect ratio.
 
-| 형식 | 자리 | 가로:세로 |
+| Format | Where | Width : height |
 |---|---|---|
-| 전체 폭 | 2단 논문의 두 단 전체, 1단 논문의 본문 폭 | 약 2:1 ~ 3.2:1 |
-| 한 단 폭 | 2단 논문의 한 단, 1단 논문의 본문 폭 0.75배 이하 | 약 1:1 ~ 1.7:1 |
+| Full width | both columns of a two-column paper, the text width of a one-column paper | about 2:1 to 3.2:1 |
+| One column | one column of a two-column paper, at most 0.75 of the text width of a one-column paper | about 1:1 to 1.7:1 |
 
-- **적용:**
-  - 비율을 넘으면 요소를 흐름과 수직으로 쌓거나, 반복 라벨을 빼거나, 흐름을 두 줄로 나눔.
-  - 칸이 적은 그래프는 칸을 늘리지 않고 figure를 좁게 만듦. 칸을 늘리면 선과 글자가 상대적으로 가늘어 보임.
-  - 내용을 어떻게 배치해도 두 형식에 맞지 않으면 글자를 줄이지 않고 figure를 나눔. 나누는 기준은 figure가 측정하는 대상임(예: 지표 묶음별로 한 장씩).
-  - `lint`가 비율을 검사함.
-- **사례:**
-  - 토큰을 흐름 방향으로 늘어놓은 overview가 4.9:1이 되어 "논문에 넣기 부적합"이라는 지적을 받았음.
-  - 칸 두 개를 전체 폭으로 펼친 그래프에서 "선이 그래프 크기에 비해 너무 얇다"는 지적을 받았음.
-  - 지표 아홉 개의 막대그래프를 한 장에 넣었더니 값 라벨이 들어갈 폭이 모자랐음. 논문의 분석 단위(지표 묶음)에 따라 두 장으로 나눔.
+- **Apply:**
+  - When the figure is too wide, stack elements across the flow, drop repeated labels, or break the flow into two rows.
+  - A chart with few panels gets a narrower figure, not wider panels; wider panels make lines and text look thin.
+  - When no arrangement fits either format, split the figure by what it measures (one figure per group of metrics) instead of shrinking text.
+  - `lint` checks the aspect.
+- **Cases:**
+  - An overview with its tokens laid out along the flow reached 4.9:1, too wide for a paper.
+  - Two chart panels spread over the full width made their lines look thin.
+  - Nine bar metrics in one figure left no room for their value labels; the figure was split by the paper's own grouping of the metrics.
 
-### 원칙 14. 흐름은 한 방향, 한 직선
+### Principle 14. One direction, one straight line
 
-- **규칙:** 한 figure 안의 흐름은 한 방향임. 주 흐름은 한 직선 위에 놓고, 보조 입력은 흐름과 수직으로 들어옴.
-- **적용:**
-  - 방향은 내용에 맞춰 하나를 고름. 단계가 이어지는 파이프라인은 왼쪽에서 오른쪽, 입력이 표현을 거쳐 출력이 되는 인코더와 디코더 구조는 아래에서 위, 상위 시스템이 하위 시스템을 조건 짓는 계층 구조는 위에서 아래임. 시간 축이 있으면 시간은 왼쪽에서 오른쪽이고, 정보 흐름은 그와 수직인 한 방향임.
-  - 저자의 figure 설명이 방향을 정했으면 그 방향을 따름(원칙 2).
-  - 토큰이나 latent 같은 반복 요소는 흐름과 수직으로 쌓음. 왼쪽에서 오른쪽 흐름이면 세로로 쌓아(`kit.diagram.tokenStack`) 모듈 높이와 맞추고, 아래에서 위 흐름이면 가로로 놓음.
-  - 보조 입력(지시문, 상태)은 주 흐름 아래에서 위로 들어오게 함.
-  - 화살표는 연결하는 요소의 중심에 붙임.
-- **사례:** 라벨 달린 토큰 줄 때문에 화살표가 토큰이 아니라 "토큰과 라벨 묶음"의 가운데를 가리켜 흐름 선이 어긋났음. `kit.diagram.flowRow`가 각 요소 자체의 중심에 맞춤.
+- **Rule:** A figure's flow runs in one direction. The main flow lies on one straight line, and auxiliary inputs enter at right angles to it.
+- **Apply:**
+  - Choose the direction from the content: left to right for a pipeline of stages, bottom to top for an encoder–decoder structure where inputs become representations and then outputs, top to bottom for a hierarchy where a higher system conditions a lower one. When the figure has a time axis, time runs left to right and the information flow runs at right angles to it.
+  - When the authors' sketch sets the direction, follow it (principle 2).
+  - Repeated elements such as tokens or latents stack across the flow: vertically in a left-to-right figure (`kit.diagram.tokenStack`), matching the module height; horizontally in a bottom-to-top figure.
+  - Auxiliary inputs (instructions, state) come into the main flow from below.
+  - Arrows attach to the centres of the elements they connect.
+- **Case:** A labelled row of tokens made an arrow point at the centre of "tokens plus label" rather than at the tokens, and the flow line broke. `kit.diagram.flowRow` aligns on each element itself.
 
-### 원칙 15. 동작은 원인과 결과를 함께 그리고, 시간이 핵심이면 시간을 그림
+### Principle 15. Draw a mechanism with its cause, and draw time when time matters
 
-- **규칙:** figure가 동작(어떤 조건에서 무엇이 일어나는지)을 보여 주면 결과와 함께 그 조건을 그림. 독자가 "왜 이렇게 되는가"에 그림만 보고 답할 수 있어야 함. 시간이 동작의 핵심 변수면 시간을 figure의 주요 축으로 그림.
-- **적용:**
-  - 시간 축에는 사건마다 눈금과 이름을 붙임(질의 t1, t2, 호출 1, 2, 3). 걸리는 시간은 구간 막대로 그림(`kit.diagram.span`). 축은 사건 바로 옆에 둠(`kit.diagram.timeline`).
-  - 여러 레인에서 같은 가로 위치는 같은 시각임. 레인 사이 사건은 세로로 맞춤.
-  - 결과가 조건에 따라 달라지면 두 경우를 모두 그림(새 값을 받는 경우와 이전 값을 다시 쓰는 경우, 값이 없어 기본값을 쓰는 경우).
-  - 시간이 아닌 구조(문맥 창에 무엇이 들어가는지)는 시간 축 밖에 따로 그림(원칙 8).
-  - 반복 단위(시간 스텝, 호출) 사이 간격은 그 사이에 그릴 내용이 정함. 도식적 시간이면 간격을 줄이고, 비례 시간이면 그 간격에 구간 막대 같은 정보를 둠(원칙 17).
-- **사례:** 비동기 두 시스템을 그린 figure에서 상위 시스템의 출력 하나가 하위 시스템의 두 호출에 곡선으로 이어졌지만, 다음 출력이 아직 계산 중이라 이전 값을 다시 쓴다는 조건은 그림에 없었음. 시간 축은 figure 맨 아래의 눈금 없는 선 하나였고, 호출 사이 간격은 비어 있었음. 저자의 figure 설명은 독자가 이 재사용 패턴을 한눈에 봐야 한다고 적었음.
+- **Rule:** When a figure shows a mechanism (what happens under which condition), draw the condition together with the result, so a reader can answer "why does this happen" from the drawing. When time is the variable that matters, make time a main axis of the figure.
+- **Apply:**
+  - Give every event on a time axis a tick and a name (queries t1, t2; calls 1, 2, 3). Draw durations as bars (`kit.diagram.span`). Keep the axis next to the events (`kit.diagram.timeline`).
+  - The same horizontal position is the same moment in every lane; events across lanes line up vertically.
+  - When the result depends on a condition, draw every case (a new value, a reused older value, a default when there is no value yet).
+  - Structure that is not time (what goes into a context window) is drawn away from the time axis (principle 8).
+  - The spacing between repeated units (time steps, calls) is set by what goes between them: compress it for schematic time; for proportional time, put information such as duration bars in the gaps (principle 17).
+- **Case:** A figure of two asynchronous systems linked one output of the upper system to two calls of the lower one, but did not show the condition: the next output was still being computed, so the older one was reused. Time was a bare line at the bottom of the figure with no ticks, and the space between calls was empty. The authors' sketch had asked for this reuse pattern to be visible at a glance.
 
-### 원칙 16. 게슈탈트 원칙으로 묶음
+### Principle 16. Group with the Gestalt principles
 
-- **규칙:** 독자는 가까운 것, 같은 영역 안의 것, 모양이 같은 것, 한 선으로 이어진 것을 한 묶음으로 읽음. 이 네 가지를 figure가 말하려는 묶음과 맞춤.
-- **적용:**
-  - **근접:** 라벨은 대상 바로 옆에 둠. 라벨과 대상의 거리는 모듈 사이 간격의 절반 이하임(`captioned`). 관련 요소끼리는 가깝게, 다른 묶음 사이는 넓게 둠.
-  - **공통 영역:** 한 시스템이나 한 단계의 모듈은 옅은 영역(`lane`) 하나에 넣음. 색 있는 바탕은 제안 방법 영역에만 씀.
-  - **유사성:** 역할이 같으면 모양과 색도 같음. 역할이 다르면 모양이나 색 가운데 하나 이상이 다름.
-  - **연속성:** 주 흐름은 굵은 직선 하나로, 보조 흐름은 얇은 점선으로 그림. 두 흐름이 교차하지 않게 배치함.
-- **사례:** 출력 라벨이 출력 네모에서 멀리 떨어진 구석에 있었음. 두 시스템을 나누는 경계가 없어 어느 모듈이 어느 시스템인지 글자로만 알 수 있었음.
+- **Rule:** Readers group what is close, what shares a region, what looks alike and what one line connects. Make these four agree with the groups the figure means.
+- **Apply:**
+  - **Proximity:** a label sits right beside its element, no further away than half the gap between modules (`captioned`). Related elements sit close; separate groups sit apart.
+  - **Common region:** the modules of one system or stage share one light region (`lane`). Only the proposed method's region gets a coloured background.
+  - **Similarity:** the same role has the same shape and colour; different roles differ in shape or colour.
+  - **Continuity:** the main flow is one thick straight line, auxiliary flows are thin and dashed, and flows do not cross.
+- **Case:** An output label sat in a far corner away from the output cells, and nothing separated two systems, so only the text told which module belonged to which system.
 
-### 원칙 17. 정렬은 정확하게, 빈 공간은 고르게
+### Principle 17. Align exactly, and spread space evenly
 
-- **규칙:** 요소들은 정확히 맞추거나 분명히 떼어 놓음. 조금 어긋난 정렬이 가장 나쁨. figure 안에 모듈 하나보다 큰 빈 영역을 두지 않음.
-- **적용:**
-  - 박스 안 글자는 가로와 세로 모두 가운데에 둠. 연결된 박스는 글자가 없어도 중심선을 맞춤.
-  - 수동 좌표 대신 auto layout으로 정렬을 강제함. 절대 좌표는 겹쳐야 하는 요소(레인, 겹쳐 지나가는 선, 배지)에만 씀.
-  - 간격은 두 종류만 씀. 같은 묶음 안은 좁게, 묶음 사이는 넓게 둠. 같은 역할의 요소는 크기를 맞춤(레인 폭, 행 높이).
-  - 패널 캡션은 그 패널 내용의 가운데에 둠.
-  - 비교 패널에서 한쪽에만 있는 요소의 자리를 다른 쪽에 비워 두지 않음. 그 행을 줄이거나 공통 요소의 위치를 바꿈.
-  - 가장자리 여백은 최소로 둠(1~3px).
-  - 반복 단위를 같은 간격으로 넓게 펼쳐 폭을 채우지 않음. 폭이 남으면 figure를 좁히거나 그 공간에 정보를 둠(원칙 15).
-  - `verify`가 렌더에서 가장 큰 빈 사각형을 찾아, 두 변이 폭의 8% 이상이고 넓이가 figure의 3% 이상이면 경고함(정성 예시 표는 제외). 가는 선(화살표, 곡선, 축)이 빈 공간을 잘게 나누면 이 검사에 걸리지 않으므로, 요소 주변 면적 비율(요소에서 폭의 1% 안에 드는 면적)도 셈. 확정 figure는 약 50%였고, 44% 아래면 경고함.
-- **사례:**
-  - 답 하나가 여러 행에 대응하는 표형 figure에서, 가운데 정렬이 한 행과 15px 어긋나 어색했음. 답 상자를 행 전체 높이로 늘려 합친 칸처럼 만들어 해결했음.
-  - 비교 teaser의 기존 방식 패널에서 제안 방식에만 있는 모듈 자리가 비어, 모델 아래와 입력 오른쪽에 큰 빈 영역이 생겼음. 그 패널의 캡션도 가운데에서 벗어났음.
-  - 시간 스텝을 전체 폭에 등간격으로 펼친 figure는 빈 영역 경고가 없었지만 요소 주변 면적이 42%였음(확정 figure 약 50%). 곡선과 화살표가 빈 공간을 나눠 큰 빈 사각형이 생기지 않았음.
+- **Rule:** Elements are either exactly aligned or clearly apart; a near miss is the worst case. No empty region larger than a module stays inside a figure.
+- **Apply:**
+  - Text in a box is centred both ways. Connected boxes share a centre line even without text.
+  - Auto layout enforces alignment; absolute positions are only for elements that must overlap (lanes, crossing lines, badges).
+  - Use two gaps only: small inside a group, large between groups. Elements with the same role have the same size (lane widths, row heights).
+  - A panel caption sits under the centre of its panel's content.
+  - A comparison panel keeps no empty slot for a part that only the other panel has; shorten that row or move the shared parts.
+  - Outer margins are minimal (1 to 3 px).
+  - Repeated units are not spread at even intervals to fill the width. When width is left over, narrow the figure or put information in the space (principle 15).
+  - `verify` finds the largest empty rectangle in the render and warns when both sides exceed 8% of the width and its area exceeds 3% of the figure (qualitative tables excepted). Thin lines (arrows, curves, axes) can cut empty space into pieces this test misses, so `verify` also measures coverage, the share of the figure within 1% of the width from any element: reviewed figures measured about 50%, and below 44% is a warning.
+- **Cases:**
+  - In a table-like figure where one answer spans several rows, a centred answer was 15 px off one row; stretching the answer box to the full row height made it read as a merged cell.
+  - In a comparison teaser, the prior-approach panel kept an empty slot for a module only the proposed approach has, leaving large empty regions under the model and beside the inputs, and that panel's caption was off centre.
+  - A figure that spread its time steps evenly over the full width passed the empty-region test but covered only 42% (reviewed figures about 50%); curves and arrows had cut the empty space into small pieces.
 
-### 원칙 18. 비교는 같은 틀에서, 면적은 달라지는 부분에
+### Principle 18. Compare within one frame, and spend area on what differs
 
-- **규칙:** 비교하는 패널과 칸은 같은 격자, 같은 축, 같은 순서를 씀. 두 패널에 똑같은 요소는 한 번만 그리거나 3단계(작고 회색)로 줄여, 면적 대부분이 달라지는 부분에 가게 함.
-- **적용:**
-  - 같은 figure의 그래프 칸은 x축이 같음. x축 제목은 각 열의 가장 아래 칸에만 둠.
-  - 비교 패널은 행 높이와 y 좌표를 맞춤.
-  - 방법의 순서와 색은 모든 칸과 범례에서 같음. 막대 순서도 범례 순서를 따름.
-  - 공통 입력은 두 패널이 함께 쓰는 요소 하나로 그리거나 아이콘 크기로 줄임. 반복 표시(× N)는 한 번만 씀.
-  - 표형 figure는 열 머리글을 각 열 내용의 왼쪽 끝에 맞춤.
-  - `lint`는 세 단어 이상인 같은 라벨이 반복되면 경고함.
-- **사례:**
-  - 칸마다 축 제목과 눈금 간격이 달라 "간격 정렬 맞춰"라는 요청을 받았음.
-  - 두 패널에 같은 네 단어 입력 라벨이 반복되어 "너무 redundant하다"는 지적을 받았음.
+- **Rule:** Panels and cells that are compared share one grid, one set of axes and one order. Parts identical in both panels are drawn once or reduced to level 3 (small and gray), so that most of the area goes to what differs.
+- **Apply:**
+  - Chart panels in one figure share the x axis; the x title appears only under the lowest panel of each column.
+  - Comparison panels share row heights and y positions.
+  - Method order and colour are the same in every panel and in the legend, and bars follow the legend order.
+  - A shared input is drawn once for both panels or reduced to icon size; a repeat mark (× N) appears once.
+  - In a table-like figure, column headers align with the left edge of their column's content.
+  - `lint` warns when a label of three or more words repeats.
+- **Cases:**
+  - Panels with different axis titles and tick spacings could not be compared at a glance.
+  - A four-word input label repeated in both panels of a comparison.
 
-### 원칙 19. 범례는 figure 안, 설명하는 요소 가까이, 데이터와 겹치지 않는 곳에 둠
+### Principle 19. The legend sits inside the figure, near what it explains, clear of the data
 
-- **규칙:** 범례는 figure 안에 두어 시선이 왕복하지 않게 함. 범례는 그것이 설명하는 요소가 있는 패널이나 영역 안에 둠. 데이터, 라벨, 선과 겹치지 않음.
-- **적용:**
-  - 빈 칸이나 빈 구석이 있으면 그곳에 테두리 상자로 넣음. 없으면 그림 아래 한 줄에 둠.
-  - 한 패널의 기호만 설명하는 범례를 다른 패널에 두지 않음. 여러 패널에 걸친 기호면 figure 아래 한 줄에 둠.
-  - 범례를 다른 요소 바로 옆에 붙이지 않음. 붙이면 그 요소의 라벨처럼 읽힘(원칙 16).
-  - 보조 범례는 작게 해도 되지만, 읽기 하한(6장) 아래로는 내리지 않음.
-  - 범례 순서는 제안 방법이 먼저임. 범례에는 figure에 실제로 쓴 기호만 넣음.
-- **사례:**
-  - 그래프 아래 긴 범례 줄을 빈 칸에 넣으라는 요청을 받았음. 레이더 범례는 "박스 쳐서 구석에 그래프랑 겹쳐" 두라는 요청을 받았음.
-  - 한 패널의 점선 상자를 설명하는 범례가 옆 패널 구석에 있었고, 다른 figure에서는 범례가 아이콘 라벨 바로 옆에 붙어 그 아이콘의 설명처럼 읽혔음.
+- **Rule:** The legend is inside the figure so the eye does not travel. It sits in the panel or region of the elements it explains, and it overlaps no data, label or line.
+- **Apply:**
+  - Put it in a boxed empty cell or corner when there is one; otherwise in one row under the figure.
+  - A legend for one panel's symbols never sits in another panel. Symbols used across panels get one row under the figure.
+  - A legend never sits right beside another element, where it would read as that element's label (principle 16).
+  - A secondary legend may be smaller, never below the reading floor (section 6).
+  - The proposed method comes first, and the legend holds only symbols the figure uses.
+- **Cases:**
+  - A long legend row under a chart fitted into an empty cell of the chart instead.
+  - A radar legend sits boxed in a corner, overlapping the radar area but no label and no ring.
+  - One legend explained a dashed box in the other panel; another sat right beside an icon label and read as that icon's name.
 
-## 4. 출력
+## 4. Output
 
-### 원칙 20. 인쇄 크기로 판단함
+### Principle 20. Judge sizes at print size
 
-- **규칙:** 글자, 선, 기호의 크기는 캔버스 px가 아니라 논문에 인쇄된 크기로 판단함. 자리가 모자라면 글자를 줄이지 않고 내용이나 배치를 바꿈.
-- **적용:**
-  - 크기는 figure 폭에 대한 비율로 정하고(6장 기본값), 반 폭으로 넣는 figure는 `placement`로 인쇄 크기를 계산함.
-  - 읽어야 하는 글자에는 하한을 둠.
-  - 선과 기호는 그것이 놓인 요소의 크기에 맞춤. 넓은 칸에 가는 선을 두지 않음.
-- **사례:**
-  - 언어 모델이 만든 figure에서 "글씨가 잘 안 보임", "글자를 2배로", "좀만 더 키워줘"가 반복됐음. 6장의 크기는 그 끝에 확정한 값임.
-  - teaser 패널 하나에 레이더를 끼워 넣으며 받은 "라벨은 작게" 요청이 레이더의 기본 크기가 되었음. 그래서 따로 그린 레이더의 축 이름이 읽기 하한(15px)에 붙고, 선이 다른 그래프보다 20% 가늘었음. 레이더는 그래프이므로 그래프 역할 크기를 쓰고, 작은 크기는 패널에 끼울 때만 선택함(`compact`).
+- **Rule:** Judge text, lines and symbols at the size the paper prints them, not in canvas pixels. When space runs short, change the content or the layout, never shrink the text.
+- **Apply:**
+  - Sizes are shares of the figure width (section 6); a figure placed below full width is computed with its `placement`.
+  - Text that must be read has a floor.
+  - Lines and symbols scale with the element they sit on; a wide panel never gets a thin line.
+- **Cases:**
+  - Figures drawn by language models kept coming back with text too small to read at print size; the sizes in section 6 are where those corrections settled.
+  - Small labels chosen for a radar squeezed into one teaser panel had become the radar default, so a radar drawn on its own put its axis names at the reading floor (15 px) with lines 20% thinner than other charts. A radar is a chart and uses the chart roles; the small sizes are an option for a radar inside a panel (`compact`).
 
-### 원칙 21. 어떤 뷰어에서도 같게 보임
+### Principle 21. It looks the same in every viewer
 
-- **규칙:** PDF는 투명도나 마스크를 제대로 처리하지 않는 뷰어에서도 같게 보여야 함. 모든 요소는 프레임 안에 있어야 함.
-- **적용:** 아래 함정을 kit과 `qa`가 막음. `qa`는 투명도를 켠 렌더와 끈 렌더를 비교하고, 둘이 다르면 실패로 봄. `lint`는 프레임 밖으로 나간 글자를 잡음.
+- **Rule:** The PDF looks the same in viewers that ignore transparency or masks, and every element lies inside the frame.
+- **Apply:** The kit and `qa` guard against the pitfalls below. `qa` renders the PDF with transparency on and off and fails when the two differ; `lint` catches text outside the frame.
 
-| 함정 | 증상 | 대처 |
+| Pitfall | Symptom | Guard |
 |---|---|---|
-| clip 프레임, 마스크, SVG 노드의 clip | Figma가 soft mask로 써서 일부 뷰어가 검은 상자나 잔상을 그림 | clip을 끄고, 빗금은 칸 안으로 잘린 다각형으로 그림 |
-| 투명 채움, 그룹 투명도 | 투명도를 무시하는 뷰어에서 불투명하게 칠해짐 | 흰 바탕과 미리 섞은 불투명 색(`kit.spec.mix`)을 씀 |
-| 덜 로드된 이미지와 글꼴 | 연보라 자리표시 색, 빠진 화살표 글리프 | 내보내기 전에 이미지와 글꼴을 로드하고 한 번 미리 렌더함 |
-| 이모지 글자 | 래스터로 박히거나 빠짐 | 벡터 아이콘(`kit.diagram.icon`)을 씀 |
-| 프레임 밖으로 나간 요소 | PDF가 잘리거나 프레임보다 커져 크기와 비율 검사가 틀림 | 프레임 안에 배치함 |
+| Clipping frames, masks, clipped SVG nodes | Figma writes soft masks, which some viewers draw as black boxes or ghosts | No clipping; hatch stripes are polygons cut to their cell |
+| Translucent fills, group opacity | Viewers that ignore transparency paint them solid | Opaque colours pre-mixed with white (`kit.spec.mix`) |
+| Images and fonts not yet loaded | Lavender placeholder fills, missing arrow glyphs | Load images and fonts and render once before exporting |
+| Emoji characters | Rasterised or dropped | Vector icons (`kit.diagram.icon`) |
+| Elements outside the frame | The PDF is cut, or grows past the frame and the size and aspect checks go wrong | Keep everything inside the frame |
 
-## 5. 작업 방식
+## 5. Way of working
 
-### 원칙 22. 직접 보고, 반복되는 지적은 검사로 바꿈
+### Principle 22. Look at the render, and turn repeated corrections into checks
 
-- **규칙:** 렌더를 직접 보고 확인한 뒤 보고함. 한 번 나온 지적은 자동 검사나 kit 기본값에 넣어, 같은 지적이 다시 나오지 않게 함.
-- **적용:**
-  - `verify`의 두 렌더(일반, 투명도 끔)를 열어 봄.
-  - 자동 검사로 잡기 어려운 항목은 렌더를 보며 확인함: 근접과 묶음(원칙 16), 위계의 의미(원칙 9), 모델 이름(원칙 5), 저자 설명과의 일치(원칙 2), 캡션 없이 모든 부호가 읽히는지(원칙 12), 동작의 이유가 그림에 있는지(원칙 15), 정보 없이 넓은 빈 공간이 있는지(원칙 17).
-  - 자동 검사 경고가 0이어도 작업을 끝내지 않음. 검사가 모르는 문제가 남을 수 있으므로 위 항목은 렌더를 보고 판단함.
-  - 찾은 문제는 나열만 하지 않고 끝까지 고침.
-  - 판단이 갈리는 경우 변형을 두 개 이상 만들어 나란히 둠.
-  - 검사와 kit 기본값이 어긋나면 기본값부터 의심함. 기본값이 figure 하나를 위한 결정에서 왔는지 확인하고, 검사를 기본값에 맞춰 느슨하게 만들지 않음. 레이더 글자 크기 검사를 kit 기본값에 맞춰 느슨하게 만들었다가, 작은 글자가 그대로 남은 적이 있음.
+- **Rule:** Look at the render before reporting. A correction that came up once goes into a check or a kit default, so it does not come up again.
+- **Apply:**
+  - Open both renders of `verify` (normal and transparency off).
+  - Check by eye what the checks cannot judge: proximity and grouping (principle 16), the meaning of the hierarchy (principle 9), model names (principle 5), agreement with the authors' sketch (principle 2), whether every code reads without the caption (principle 12), whether the drawing shows why the mechanism happens (principle 15), and whether wide space holds no information (principle 17).
+  - Zero warnings does not end the work; the checks cannot know every problem, so the items above are judged on the render.
+  - Fix what you find instead of listing it.
+  - When the choice is a judgment call, make two or more variants and set them side by side.
+  - When a check disagrees with a kit default, suspect the default first: find out whether it came from a decision made for one figure, and never loosen the check to match it. A radar text-size check was once loosened to match the kit default, and the small text stayed.
 
-### 원칙 23. 사용자의 작업과 맥락을 지킴
+### Principle 23. Protect the user's work and context
 
-- **규칙:** 요청받은 대상만 바꾸고, 사용자의 원본과 익명성을 지킴.
-- **적용:**
-  - 작은 수정 요청은 이름이 나온 대상만 바꿈.
-  - 사용자가 만든 원본은 덮어쓰지 않고, 지울 때는 되돌릴 수 있게 지움.
-  - 공동 연구자 피드백과 에이전트 해석을 구분해 보고함.
-  - 이중 맹검 심사 중인 논문은 파일, 프레임 이름, 공개 저장소에 저자와 논문을 드러내는 정보를 넣지 않음.
+- **Rule:** Change only what was asked, and protect the user's originals and anonymity.
+- **Apply:**
+  - A small correction changes only the element it names.
+  - The user's originals are never overwritten, and deletions can be undone.
+  - Collaborators' feedback and the agent's own interpretation are reported apart.
+  - For a paper under double-blind review, files, frame names and public repositories carry nothing that identifies the authors or the paper.
 
-## 6. 기본값
+## 6. Defaults
 
-원칙을 구현한 값임. kit과 검사가 쓰고, 논문마다 이유를 적고 바꿀 수 있음.
+The values that implement the principles. The kit and the checks use them; a paper may change them with a stated reason.
 
-### 크기 (원칙 20)
+### Sizes (principle 20)
 
-크기는 figure 폭 W에 대한 비율임. 인쇄 크기는 pt = px × 396 / W이고, 396pt는 ICLR, NeurIPS 본문 폭 5.5in임. 반 폭으로 넣는 figure는 W 대신 W ÷ `placement`로 계산함. `kit.sizes(kind, W)`가 계산함.
+Sizes are shares of the figure width W. The printed size is pt = px × 396 / W, where 396 pt is the 5.5 in text width of ICLR and NeurIPS. A figure placed below full width uses W ÷ `placement` instead of W. `kit.sizes(kind, W)` computes them.
 
-**다이어그램 (기준 폭 1498px)**
+**Diagrams (reference width 1498 px)**
 
-| 역할 | px | 폭 대비 | 인쇄 |
+| Role | px | Share of width | Print |
 |---|---|---|---|
-| 패널 캡션, 1단계 요소, 두 패널 figure의 모델 블록 | 32 | 2.14% | 8.5pt |
-| 그룹 제목 | 30 | 2.00% | 7.9pt |
-| 2단계 모듈 이름, 표형 figure의 열 머리글 | 28 | 1.87% | 7.4pt |
-| 레인과 행 라벨, 범례 | 26 | 1.74% | 6.9pt |
-| 3단계 라벨, 짧은 주석, 프롬프트 칩 | 22 | 1.47% | 5.8pt |
-| 데이터 글자(고정폭) | 20 | 1.34% | 5.3pt |
+| Panel caption, level-1 element, model block of a two-panel figure | 32 | 2.14% | 8.5 pt |
+| Group title | 30 | 2.00% | 7.9 pt |
+| Level-2 module name, column header of a table-like figure | 28 | 1.87% | 7.4 pt |
+| Lane and row label, legend | 26 | 1.74% | 6.9 pt |
+| Level-3 label, short note, prompt chip | 22 | 1.47% | 5.8 pt |
+| Data text (monospaced) | 20 | 1.34% | 5.3 pt |
 
-**그래프 (기준 폭 1248px, 한 줄에 칸 4~5개)**
+**Charts (reference width 1248 px, four or five panels per row)**
 
-| 역할 | px | 폭 대비 | 인쇄 |
+| Role | px | Share of width | Print |
 |---|---|---|---|
-| 그룹 제목 | 22 | 1.76% | 7.0pt |
-| 칸 제목 | 21 | 1.68% | 6.7pt |
-| 축 제목, 범례 | 19 | 1.52% | 6.0pt |
-| 눈금 숫자 | 18 | 1.44% | 5.7pt |
+| Group title | 22 | 1.76% | 7.0 pt |
+| Panel title, radar axis name | 21 | 1.68% | 6.7 pt |
+| Axis title, legend | 19 | 1.52% | 6.0 pt |
+| Tick label | 18 | 1.44% | 5.7 pt |
 
-**하한:** 읽어야 하는 글자는 폭의 1.2%(약 4.8pt) 이상임. 보조 범례만 1.05%까지 허용함.
+**Floor:** text that must be read is at least 1.2% of the width (about 4.8 pt); secondary legends may go down to 1.05%.
 
-**그래프 칸:** 그래프 영역은 기준 폭에서 가로 160~260px, 세로 180px임.
+**Chart panels:** plot areas are 160 to 260 px wide and 180 px tall at the reference width.
 
-### 라벨 단어 수 (원칙 4)
+### Label words (principle 4)
 
-`kit.place(root, { type })`로 figure 종류를 적으면 `lint`가 아래 상한으로 셈. 고정폭 글꼴로 인용한 예시와 데이터는 세지 않음.
+`kit.place(root, { type })` records the figure kind, and `lint` counts label words against these budgets. Quoted examples and data in the monospaced face do not count.
 
-| 종류 | 라벨 단어 수 상한 |
+| Kind | Label word budget |
 |---|---|
-| teaser | 25 |
-| 방법론 overview | 40 |
-| 세부 방법론 | 50 |
-| 정성 예시 | 30 |
-| 종류를 적지 않은 다이어그램 | 40 |
+| Teaser | 25 |
+| Method overview | 40 |
+| Method detail | 50 |
+| Qualitative example | 30 |
+| Diagram of no stated kind | 40 |
 
-라벨 하나는 4단어 이하임.
+A single label is at most four words.
 
-### 선과 기호 (기준 폭 1498px)
+### Lines and symbols (reference width 1498 px)
 
-| 요소 | 값 |
+| Element | Value |
 |---|---|
-| 흐름 점선 | 2.8px, dash 5/8, 끝에 화살촉(길이 10, 폭 12) |
-| 실선 화살표 | 2.4px, 화살촉 12 |
-| 끊긴 연결 | 회색 점선 2.4px, 끝에 빨간 ✕ |
-| 선택 입력, 대체 경로의 외곽선 | 점선 dash 7/5 |
-| 패널 사이 세로 점선 / 예시 사이 가로 점선 | 2.6px dash 6/9 / 2px dash 6/9 |
-| 모듈 외곽선, 칩 외곽선 | 1.6px, 1.3px |
-| noisy latent 빗금 | 폭 5px, 간격 14px, 45도 |
-| latent 칸 | 56px(두 패널), 40px(세 패널), 반지름 4 |
-| 아이콘 | 44px, 3단계 회색 선 |
-| 그래프 선, 점 | 2.5px, 반지름 4.5에 흰 테두리 1.4px |
-| 격자, 축, 눈금 표시 | 1.2px `#E6E6E6`, 1.5px `#CFCFCF`, 축 안쪽 7px |
-| 학습, 고정 배지 | 불꽃, 눈송이 벡터 아이콘 28px, 모듈의 실제 오른쪽 위 꼭짓점. 드문 쪽에만 |
+| Dashed flow track | 2.8 px, dash 5/8, arrowhead (length 10, width 12) |
+| Solid arrow | 2.4 px, head 12 |
+| Blocked link | gray dashed 2.4 px ending in a red ✕ |
+| Outline of an optional input or fallback path | dashed, dash 7/5 |
+| Vertical divider between panels / horizontal divider between examples | 2.6 px dash 6/9 / 2 px dash 6/9 |
+| Module outline, chip outline | 1.6 px, 1.3 px |
+| Noisy latent hatch | 5 px stripes, 14 px pitch, 45° |
+| Latent cell | 56 px (two panels), 40 px (three panels), radius 4 |
+| Icon | 44 px, level-3 gray strokes |
+| Chart line, marker | 2.5 px, radius 4.5 with a 1.4 px white ring |
+| Grid, axis, tick mark | 1.2 px `#E6E6E6`, 1.5 px `#CFCFCF`, 7 px inside the axis |
+| Trained and frozen badges | flame and snowflake vector icons, 28 px, on the module's drawn top-right corner; rarer side only |
 
-### 색 (원칙 8, 9)
+### Colour (principles 8 and 9)
 
-| 역할 | 값 |
+| Role | Value |
 |---|---|
-| 제안 방법 강조 | 청록 `#197A8A` (옅은 `#8FC4CE`, 레인 `#EBF4F6`) |
-| 두 번째 방법이나 모달리티 | 샌드 `#A98548` (옅은 `#D9BD8A`) |
-| 비교 방법, 맥락 | 회색 `#4B5563`, `#6B7280`, `#9AA2AD`, `#C3C8CF`, `#DDE1E6` |
-| 위치 표시, 끊긴 연결 | 빨강 `#E5484D`, 파랑 `#2F6FEB` |
-| 글자 | `#374151`, 보조 `#4B5563`, 제목 `#111111` |
+| Proposed method (accent) | teal `#197A8A` (light `#8FC4CE`, lane `#EBF4F6`) |
+| Second method or modality | sand `#A98548` (light `#D9BD8A`) |
+| Compared methods, context | grays `#4B5563`, `#6B7280`, `#9AA2AD`, `#C3C8CF`, `#DDE1E6` |
+| Locations, blocked links | red `#E5484D`, blue `#2F6FEB` |
+| Text | `#374151`, secondary `#4B5563`, titles `#111111` |
 
-- 논문 한 편의 figure는 같은 팔레트를 씀. `check`가 `work/<논문>/palette.json`에 방법별 색을 기록하고, `verify`가 다이어그램의 색 선언(`kit.diagram.meaning`)을 같은 파일과 대조함. 샌드는 처음 받은 방법이나 뜻만 가리킴. 회색은 figure 안에서 목록 순서대로 어두운 색부터 밝은 색으로 씀.
-- 논문마다 금지색이 생길 수 있음(주황, 보라, 초록을 뺀 논문이 있었음).
-- 투명도는 쓰지 않음.
+- All figures of one paper share one palette. `check` records method colours in `work/<paper>/palette.json`, and `verify` compares diagram colour declarations (`kit.diagram.meaning`) with it. Sand means only the first method or meaning that takes it. Grays go from dark to light in list order within a figure.
+- A paper may rule colours out (one paper excluded orange, purple and green).
+- No transparency.
 
-### 글꼴과 표기 (원칙 5, 21)
+### Fonts and wording (principles 5 and 21)
 
-- **글꼴:** 영문 라벨은 Google Sans Flex, 데이터 글자는 Google Sans Code, 방향 화살표 글자는 Roboto임. Inter로 대체하지 않음.
-- **글자 굵기:** Medium 이상이 기본임. 3단계 라벨만 Regular임. 순수 검정 대신 진한 slate를 씀.
-- **캡션과 제목:** 명사구로 씀. 캡션 글자에 강조색을 부분적으로 칠하지 않음. 가운뎃점을 쓰지 않음.
+- **Faces:** Google Sans Flex for labels, Google Sans Code for data text, Roboto for arrow glyphs. Never Inter as a fallback.
+- **Weights:** Medium or heavier by default; Regular only for level-3 labels. Dark slate instead of pure black.
+- **Captions and titles:** noun phrases. No partial accent colour inside caption text. No middle dots as separators.
 
-### 그래프 스타일 (원칙 10, 18)
+### Chart style (principles 10 and 18)
 
-- **선과 눈금:** 방법마다 실선에 원 마커를 씀. 눈금은 x축 위로 짧게 올라온 표시로 그리고 세로 격자는 그리지 않음.
-- **y축 범위:** 데이터에 맞게 좁히되(여유 2.5%) 눈금 숫자가 붙지 않게 함. 막대그래프는 0에서 시작함.
-- **범위가 크게 벌어진 지표:** 끊긴 축이나 로그 축을 씀. 한 칸에 둘을 같이 쓰지 않고, 로그 축은 캡션에 적음.
-- **눈금 숫자:** 소수 자릿수는 눈금 간격을 따름.
-- **막대 값 라벨:** 겹치면 한 칸 걸러 위로 올림.
-- **레이더:** 각 축을 가장 좋은 방법으로 나눈 비율이고, 낮을수록 좋은 축은 뒤집음. 원점은 0임.
+- **Lines and ticks:** a solid line with round markers per method; ticks are short marks rising from the x axis; no vertical grid.
+- **Y range:** fitted to the data (2.5% headroom) without crowding tick labels; bar charts start at zero.
+- **Metrics with very different ranges:** a broken axis or a log axis, never both in one panel; a log axis is named in the caption.
+- **Tick labels:** decimals follow the tick step.
+- **Bar value labels:** when two would touch, every second one moves up a line.
+- **Radar:** each axis is the ratio to its best method, lower-is-better axes inverted, origin at zero; axis names, legend, lines and markers use the chart roles.
 
-### 자동 레이아웃 (원칙 13, 18, 19)
+### Automatic layout (principles 13, 18 and 19)
 
-- **그래프:** 비워 둔 항목은 `kit/layout.js`가 정함.
-  - 줄 수를 1부터 늘려 가며 배치를 모두 계산하고, 두 형식 가운데 하나에 맞는 배치 중 줄이 가장 적은 배치를 고름. 한 단 폭은 `placement` 0.75 이하이고, 비율 범위에서 5%까지 벗어나도 맞는 것으로 봄.
-  - 그래프 영역은 가로 약 230px가 기준이고, 선 그래프는 160px까지 좁힐 수 있음. 막대 칸은 값 라벨이 들어갈 폭보다 좁히지 않음.
-  - 한 줄에 최대 5열, 최대 3줄임. 어느 배치도 맞지 않을 때만 그래프 영역을 최대 40% 높임. 그래도 맞지 않으면 figure를 나누라는 경고를 냄.
-  - 빈 칸이 있으면 범례를 그 칸에 넣고 옆 칸과 높이를 맞춤. 빈 칸이 없으면 아래에 두고, figure보다 넓으면 줄을 바꿈. 막대그래프 범례는 네모 견본을 씀.
-  - 바깥 열은 잉크 끝까지 잘라 가장자리 여백을 2px 안팎으로 둠. 그리고 실제로 그린 폭으로 `placement`를 다시 계산해 프레임에 저장함.
-- **다이어그램 스크립트:** 선언한 폭(`FW`)과 비율을 넘으면 오류를 냄. `kit.place(root, { declaredWidth: FW, type })`가 인쇄 크기를 지키는 LaTeX 폭을 알려 주고, 폭과 종류와 색 선언을 프레임에 저장함. `lint`와 `verify`는 저장된 값으로 판단함.
+- **Charts:** `kit/layout.js` fills in what a spec leaves out.
+  - It computes every arrangement from one row up and picks the one with the fewest rows that fits a format. A one-column figure is placed at 0.75 of the text width or less, and an aspect within 5% of a range still fits.
+  - Plot areas aim at about 230 px wide; line panels may narrow to 160 px; bar panels never narrow below the room their value labels need.
+  - At most five columns and three rows. Only when nothing fits do plots grow up to 40% taller; when that fails too, a warning says to split the figure.
+  - An empty cell takes the legend, matched to the height of its neighbours; without one, the legend goes under the panels and wraps when wider than the figure. Bar charts get square legend swatches.
+  - Outer columns are trimmed to their ink, about 2 px from the edge, and the placement is recomputed from the drawn width and stored on the frame.
+- **Diagram scripts:** a script throws when the figure grows past its declared width (`FW`) or its format. `kit.place(root, { declaredWidth: FW, type })` returns the LaTeX width that keeps the print size and stores the width, kind and colour declarations on the frame, and `lint` and `verify` judge the figure by them.

@@ -61,5 +61,10 @@ Figma is needed only for `build`, `script`, `export` and `verify`; the tests run
 
 ## Language
 
-Code, comments and the README are in English. The figure principles and the local setup guide are in Korean, the
-language they were written in; translations are welcome as separate files.
+Code, comments, the README, the skill and the figure principles are in English. The principles also have a Korean
+translation ([figure-principles.ko.md](docs/figure-principles.ko.md)); when you change a principle, change the English
+version first, and update the translation or note in your pull request that it needs updating. The local setup guide
+is in Korean ([quickstart.ko.md](docs/quickstart.ko.md)); the README's quick start covers the same steps in English.
+
+Cases in the principles describe what went wrong in a figure and what fixed it. They do not quote feedback or say who
+asked for a change.

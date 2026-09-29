@@ -1,8 +1,8 @@
 // Size, stroke and colour specification for paper figures.
 //
-// The numbers were measured on paper figures the author approved in 2026-09, after many rounds of
-// "the text is too small". Language models tend to shrink text until a figure fits; do not. Keep these
-// sizes, and when a layout does not fit, remove content or widen the figure instead.
+// The numbers were measured on reviewed paper figures (2026-09), where text had been enlarged until it read well at
+// print size. Language models tend to shrink text until a figure fits; do not. Keep these sizes, and when a layout does
+// not fit, remove content or change the layout instead.
 //
 // Every size is defined at a reference width and scales with the figure width. A figure is placed at \linewidth in the
 // paper, so a wider canvas makes every pixel smaller in print; scaling keeps the printed size constant.
@@ -37,7 +37,7 @@ export const TEXT = {
 
 // Nobody should have to read text smaller than this share of the figure width (about 4.8 pt at 5.5 in).
 export const FLOOR_PCT = 1.2;
-// Secondary legends the author explicitly asked to shrink may go down to this share, never below.
+// Secondary legends (a boxed legend tucked into a corner) may go down to this share, never below.
 export const SECONDARY_FLOOR_PCT = 1.05;
 
 export const STROKE = {

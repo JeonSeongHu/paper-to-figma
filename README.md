@@ -21,6 +21,7 @@ Every number is checked against the paper, every label is sized for print. No de
 <a href="#gallery">Gallery</a> ·
 <a href="#how-it-works">How it works</a> ·
 <a href="docs/figure-principles.md">Figure principles</a> ·
+<a href="docs/figure-principles.ko.md">원칙 (한국어)</a> ·
 <a href="docs/quickstart.ko.md">한국어 실행법</a>
 </p>
 
@@ -119,7 +120,7 @@ verify <frame> --paper N       export + qa + lint (+ evidence with --spec); writ
 
 Each check comes from a failure in real figures:
 
-- **Text shrinks.** Language models shrink text until everything fits. The size spec was measured on figures the author approved after repeated "make the text bigger" rounds; `lint` fails text under 1.2 % of the figure width at print size.
+- **Text shrinks.** Language models shrink text until everything fits. The size spec was measured on reviewed figures, where the text had been enlarged until it read well at print size; `lint` fails text under 1.2 % of the figure width at print size.
 - **Numbers drift.** `check` refuses any value without a source in the paper, and any value that differs from the printed one at the printed precision. Numbers that appear only in the authors' figure sketches are not evidence.
 - **PDFs break in some viewers.** Figma writes clipping frames and masks as soft masks, which some viewers draw as black boxes; viewers that ignore transparency paint translucent fills solid.
 - **Layouts stretch.** Two chart panels spread over the full width make 2.5 px lines look thin. The layout step keeps plot areas at the approved size and fits one of the two paper formats instead.
