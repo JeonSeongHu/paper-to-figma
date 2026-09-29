@@ -150,7 +150,11 @@ export async function kitBundle() {
 }
 
 // Talk to Figma transport.
-export async function connectTalkToFigma({ port = 3055, channel, timeout = 180000 } = {}) {
+// Commands that draw or export load the kit's fonts first. A plugin left in a bad state (seen after an interrupted large
+// export: its timers had stopped, and a font load late in the kit's sequence never resolved) then never answers, and
+// the command waited for its whole timeout without a word. A short first request that only loads the fonts turns this
+// into a quick error that says what to do. fontCheck is that request's time limit in ms.
+export async function connectTalkToFigma({ port = 3055, channel, timeout = 180000, fontCheck = 15000 } = {}) {
   if (!channel) throw new Error("Talk to Figma channel required (shown in its plugin window)");
   const kitSource = await kitBundle();
   const endpoint = `ws://localhost:${port}`;
@@ -195,19 +199,27 @@ export async function connectTalkToFigma({ port = 3055, channel, timeout = 18000
     pending.clear();
   });
   await ready;
+  const send = (code, ms, timeoutMessage) => {
+    const id = crypto.randomUUID();
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        pending.delete(id);
+        reject(new Error(timeoutMessage));
+      }, ms);
+      pending.set(id, { resolve, reject, timer });
+      ws.send(JSON.stringify({ id, type: "message", channel, message: { id, command: "execute_code", params: { code, commandId: id } } }));
+    });
+  };
+  let fontsLoaded = false;
   return {
     transport: "talk-to-figma",
-    request(command, params = {}, ms = timeout) {
-      const id = crypto.randomUUID();
-      const code = compatScript(kitSource, command, params);
-      return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => {
-          pending.delete(id);
-          reject(new Error(`${command} timed out after ${ms} ms. A write may have completed; inspect the page before retrying.`));
-        }, ms);
-        pending.set(id, { resolve, reject, timer });
-        ws.send(JSON.stringify({ id, type: "message", channel, message: { id, command: "execute_code", params: { code, commandId: id } } }));
-      });
+    async request(command, params = {}, ms = timeout) {
+      if (!fontsLoaded && ["build", "script", "export"].includes(command)) {
+        const check = `${kitSource}\nawait globalThis.createPaperKit(figma).init();\nreturn true;`;
+        await send(check, fontCheck, `Figma did not load the kit's fonts within ${fontCheck / 1000} s, so the plugin is probably stuck (an interrupted export can leave it so). Close and reopen the plugin, then retry.`);
+        fontsLoaded = true;
+      }
+      return send(compatScript(kitSource, command, params), ms, `${command} timed out after ${ms} ms. A write may have completed; inspect the page before retrying.`);
     },
     close: () => ws.close(),
   };
