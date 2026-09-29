@@ -91,15 +91,19 @@ put(D.badge("frozen", FW, { size: 44 }), 690, 150, { blur: 4, fade: 0.55 });
 put(D.badge("trained", FW, { size: 44 }), 250, 420, { blur: 4, fade: 0.55 });
 put(D.blockedArrow(110, { fw: FW }), 600, 470, { blur: 4, fade: 0.5, turn: -5 });
 
-// the name, sharp, on a soft white halo so it reads over the parts
-const halo = kit.rect(900, 170, "#FFFFFF", 85, "halo");
+// the name and the line under it, sharp, on a soft white halo so they read over the parts
+const halo = kit.rect(940, 230, "#FFFFFF", 110, "halo");
 root.appendChild(halo);
-halo.x = (W - 900) / 2;
-halo.y = (H - 170) / 2;
+halo.x = (W - 940) / 2;
+halo.y = (H - 230) / 2;
 halo.effects = [{ type: "LAYER_BLUR", radius: 40, visible: true }];
-const name = kit.TM("paper-to-figma", 96, { color: "#111827", style: "SemiBold" });
-root.appendChild(name);
-name.x = Math.round((W - name.width) / 2);
-name.y = Math.round((H - name.height) / 2);
+const title = kit.add(
+  kit.AL("title", "VERTICAL", { gap: 10, cross: "CENTER" }),
+  kit.TM("paper-to-figma", 96, { color: "#111827", style: "SemiBold" }),
+  kit.T("Turn your paper into publication-ready figures.", 30, { color: "#4B5563", style: "Medium" }),
+);
+root.appendChild(title);
+title.x = Math.round((W - title.width) / 2);
+title.y = Math.round((H - title.height) / 2);
 
 return await kit.place(root, { pageName: args.page, name: "paper-to-figma / teaser", x: args.x ?? 0, y: args.y ?? 16000 });

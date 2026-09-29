@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If paper-to-figma helped with the figures of your paper, please cite it as below."
+title: "paper-to-figma: publication-ready paper figures in Figma, made by an agent from a paper's text"
+type: software
+authors:
+  - family-names: Jeon
+    given-names: Seonghu
+repository-code: "https://github.com/JeonSeongHu/paper-to-figma"
+license: MIT
+version: 0.1.0
+date-released: "2026-09-29"
+keywords:
+  - figma
+  - scientific figures
+  - research tools
+  - agents
+  - model context protocol

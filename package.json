@@ -3,12 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Verified paper figures in Figma from a paper's text: a figure kit with a measured size spec, a local Figma bridge, evidence checks against the paper, and PDF checks for strict viewers.",
+  "description": "Turn your paper into publication-ready figures: an agent draws them as editable Figma frames, with every number checked against the paper.",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JeonSeongHu/paper-to-figma.git"
   },
+  "homepage": "https://github.com/JeonSeongHu/paper-to-figma#readme",
+  "bugs": {
+    "url": "https://github.com/JeonSeongHu/paper-to-figma/issues"
+  },
+  "keywords": [
+    "figma",
+    "figma-plugin",
+    "scientific-figures",
+    "research",
+    "paper",
+    "latex",
+    "mcp",
+    "claude-code",
+    "agent",
+    "data-visualization"
+  ],
   "engines": {
     "bun": ">=1.2.0"
   },

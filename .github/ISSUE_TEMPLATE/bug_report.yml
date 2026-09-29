@@ -1,0 +1,24 @@
+name: Bug report
+description: A command, the relay, the plugin or a check does not work
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The error or the unexpected output.
+      render: text
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS, Bun version, Figma desktop version, transport (paired or talk-to-figma).
+    validations:
+      required: true

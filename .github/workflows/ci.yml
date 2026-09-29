@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bun test
+      - name: Bundles are up to date
+        run: |
+          bun run build
+          git diff --exit-code -- kit/dist/kit.js plugin/code.js || (echo "Run 'bun run build' and commit kit/dist/kit.js and plugin/code.js" && exit 1)
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: PDF checks compile
+        run: python -m py_compile scripts/pdf_qa.py

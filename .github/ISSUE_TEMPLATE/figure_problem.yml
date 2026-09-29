@@ -1,0 +1,39 @@
+name: Figure problem
+description: A figure came out wrong, or a rule seems to be missing
+labels: ["figure"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Please do not attach a paper under double-blind review or numbers taken from it.
+        Describe the figure in general terms, or reproduce it with the synthetic example in `examples/anon-paper/`.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Figure kind
+      options: [Teaser, Method overview, Method detail, Result chart, Summary radar, Qualitative example, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: One sentence, then details. For example "the legend explains a symbol in the other panel".
+    validations:
+      required: true
+  - type: textarea
+    id: render
+    attributes:
+      label: Render or screenshot
+      description: Drop the render (work/<paper>/qa/*.normal.png) or a screenshot here.
+  - type: textarea
+    id: verify
+    attributes:
+      label: verify report
+      description: The relevant part of work/<paper>/verify-<frame>.md, if you ran it.
+      render: markdown
+  - type: textarea
+    id: rule
+    attributes:
+      label: Which principle applies, or what rule is missing
+      description: See docs/figure-principles.md.

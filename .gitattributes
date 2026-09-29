@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.png binary
+*.pdf binary
+kit/dist/kit.js linguist-generated
+plugin/code.js linguist-generated
+bun.lock linguist-generated
